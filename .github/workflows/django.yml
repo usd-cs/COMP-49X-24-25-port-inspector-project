@@ -33,4 +33,4 @@ jobs:
         
     - name: Run Tests
       run: |
-        python manage.py test
+        python ./port_inspector/manage.py test
