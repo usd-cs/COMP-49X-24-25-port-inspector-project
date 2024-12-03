@@ -29,7 +29,7 @@ jobs:
 
     - name: Style Checking
       run: |
-        flake8 .  --ignore=F401 --per-file-ignores="./port_inspector/port_inspector/settings.py:E501" --max-line-length=150 --exclude=migrations/,*test*.py
+        flake8 .  --ignore=F401 --per-file-ignores="./port_inspector/port_inspector/settings.py:E501" --max-line-length=150
         
     - name: Run Tests
       run: |
