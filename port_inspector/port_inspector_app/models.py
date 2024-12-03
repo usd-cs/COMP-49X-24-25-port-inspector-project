@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -17,6 +18,7 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     user_id = models.AutoField(primary_key=True)
@@ -44,6 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+
 class SpecimenUpload(models.Model):
     id = models.AutoField(primary_key=True)  # Explicit primary key
     user = models.ForeignKey('port_inspector_app.User', on_delete=models.CASCADE, related_name="uploads")
@@ -54,12 +57,13 @@ class SpecimenUpload(models.Model):
         num_images = self.images.count()
         if num_images < 1 or num_images > 5:
             raise ValidationError(f"A SpecimenUpload must have between 1 and 5 images. Found {num_images}.")
-            
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"SpecimenUpload #{self.id} by {self.user.email} on {self.upload_date}"
+
 
 class Image(models.Model):
     id = models.AutoField(primary_key=True)  # Explicit primary key
