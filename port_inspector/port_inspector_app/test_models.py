@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from .models import User, SpecimenUpload, Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 
+
 class SpecimenUploadModelTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(email="test@example.com", password="password123")
@@ -72,3 +73,4 @@ class SpecimenUploadIntegrationTests(TestCase):
         # Check that each image filename starts with the expected prefix
         for i, img in enumerate(images):
             self.assertTrue(img.image.name.startswith(f"uploads/image{i}"))
+            
