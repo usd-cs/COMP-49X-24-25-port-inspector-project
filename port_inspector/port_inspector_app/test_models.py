@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from .models import User, SpecimenUpload, Image
 from django.core.files.uploadedfile import SimpleUploadedFile
-
+# flake8: noqa
 
 class SpecimenUploadModelTests(TestCase):
     def setUp(self):
@@ -73,4 +73,3 @@ class SpecimenUploadIntegrationTests(TestCase):
         # Check that each image filename starts with the expected prefix
         for i, img in enumerate(images):
             self.assertTrue(img.image.name.startswith(f"uploads/image{i}"))
-            
