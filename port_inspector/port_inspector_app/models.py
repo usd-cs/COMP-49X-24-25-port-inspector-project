@@ -48,13 +48,15 @@ class SpecimenUpload(models.Model):
     id = models.AutoField(primary_key=True)  # Explicit primary key
     user = models.ForeignKey('port_inspector_app.User', on_delete=models.CASCADE, related_name="uploads")
     upload_date = models.DateTimeField(auto_now_add=True)
-	
+
+    def clean(self):
+        # Perform validation after saving
+        num_images = self.images.count()
+        if num_images < 1 or num_images > 5:
+            raise ValidationError(f"A SpecimenUpload must have between 1 and 5 images. Found {num_images}.")
+            
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-		# Perform validation after saving
-        num_images = self.images.count()
-        if num_images > 5:
-            raise ValidationError(f"A SpecimenUpload must have between 1 and 5 images. Found {num_images}.")
 
     def __str__(self):
         return f"SpecimenUpload #{self.id} by {self.user.email} on {self.upload_date}"

@@ -47,3 +47,25 @@ class ImageModelTests(TestCase):
             image=SimpleUploadedFile("image1.jpg", b"file_content"),
         )
         self.assertEqual(str(image), f"Image #{image.id} for SpecimenUpload #{self.specimen_upload.id} uploaded at {image.uploaded_at}")
+
+class SpecimenUploadIntegrationTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email="test@example.com", password="password123")
+
+    def test_user_upload_workflow(self):
+        # Create SpecimenUpload
+        specimen_upload = SpecimenUpload.objects.create(user=self.user)
+        
+        # Add 3 images
+        images = [
+            Image.objects.create(
+                specimen_upload=specimen_upload,
+                image=SimpleUploadedFile(f"image{i}.jpg", b"file_content"),
+            ) for i in range(3)
+        ]
+        
+        # Validate SpecimenUpload
+        specimen_upload.full_clean()
+        # Check that each image filename starts with the expected prefix
+        for i, img in enumerate(images):
+            self.assertTrue(img.image.name.startswith(f"uploads/image{i}"))
