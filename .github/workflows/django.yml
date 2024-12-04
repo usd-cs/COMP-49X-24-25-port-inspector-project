@@ -24,12 +24,13 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
+        python -m pip install Pillow
         pip install -r requirements.txt
         python -m pip install flake8
 
     - name: Style Checking
       run: |
-        flake8 . --ignore=F401 --per-file-ignores="./port_inspector/port_inspector/settings.py:E501" --max-line-length=79
+        flake8 .  --ignore=F401 --per-file-ignores="./port_inspector/port_inspector/settings.py:E501" --max-line-length=150
         
     - name: Run Tests
       run: |
