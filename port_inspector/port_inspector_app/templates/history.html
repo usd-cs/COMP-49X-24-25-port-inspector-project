@@ -4,10 +4,12 @@
     }
 </style>
 
+<a href="/upload">upload</a>
+
 <ul>
 {% for image in images %}
 <li>
-{{ image.upload_id }}
+{{ image.id }}
 <img src="{{ MEDIA_URL }}/{{ image.image }}" class=history-img>
 </li>
 {% endfor %}

@@ -3,5 +3,5 @@ from . import models
 
 class ImageForm(forms.ModelForm):
     class Meta:
-        model = models.ImageSet
+        model = models.Image
         fields = ['image']
