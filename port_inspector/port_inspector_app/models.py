@@ -49,7 +49,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class SpecimenUpload(models.Model):
     id = models.AutoField(primary_key=True)  # Explicit primary key
-    user = models.ForeignKey('port_inspector_app.User', on_delete=models.CASCADE, related_name="uploads")
+
+    # user = models.ForeignKey('port_inspector_app.User', on_delete=models.CASCADE, related_name="uploads")
+    # TODO modified our upload model to work without a user session (null=True,blank=True)
+    # since we do not have log in functionality yet
+    user = models.ForeignKey('port_inspector_app.User', null=True, blank=True, on_delete=models.CASCADE, related_name="uploads")
+
     upload_date = models.DateTimeField(auto_now_add=True)
 
     def clean(self):

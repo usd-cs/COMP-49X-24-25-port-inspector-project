@@ -15,8 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf.urls.static import static
 from django.urls import path
+from port_inspector_app import views
+from . import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-]
+    path('upload/', views.upload_image),
+    path('history/', views.view_history),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# storing uploaded images to our MEDIA_URL

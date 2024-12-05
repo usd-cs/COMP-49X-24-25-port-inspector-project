@@ -1,0 +1,16 @@
+<style>
+    .history-img {
+        width: 75px
+    }
+</style>
+
+<a href="/upload">upload</a>
+
+<ul>
+{% for image in images %}
+<li>
+{{ image.id }}
+<img src="{{ MEDIA_URL }}/{{ image.image }}" class=history-img>
+</li>
+{% endfor %}
+</ul>
