@@ -3,7 +3,7 @@ name: Django CI
 on:
   push:
     paths-ignore:
-      - 'port_inspector/port_inspector_app/migrations/*'
+      - 'port_inspector/port_inspector_app/migrations/**'
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
