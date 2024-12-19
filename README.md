@@ -7,23 +7,23 @@ This project is a web application built with Django that allows users to upload 
 ## Features
 The application satisfies the following user stories:
 
-- **Photo Upload:** As a user, I want to be able to upload photos so that I can store and track them for future reference.
-- **View Upload History:** As a user, I want to view a history of all the photos I have uploaded so that I can easily access my past uploads.
+- As a Port Inspector I want to upload a photo of the beetles and be told the likely species’ of the specimen so I can soundly determine if the shipment can be let through
+- As a user I want to be able to look back at my previous identifications and the results I received to guide myself going forward, and to have a record in case clarification or data is needed.
 
 ## Technologies Used
 - **Backend & Frontend Framework:** Django
-- **Database:** Django’s default SQLite (or specify another database if applicable)
+- **Database:** Django’s default SQLite 
 
 ## Setup and Installation
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/example/photo-upload-history-app.git
+git clone https://github.com/usd-cs/COMP-49X-24-25-port-inspector-project.git)
 ```
 
 ### 2. Navigate to the Project Directory
 ```bash
-cd photo-upload-history-app
+cd port_inspector
 ```
 
 ### 3. Install Dependencies
@@ -47,12 +47,13 @@ python3 manage.py runserver
 ```
 
 ### 2. Access the Application
-Open a web browser and go to the following link:
+Open a web browser and go to the following link to upload a photo:
 ```
-http://127.0.0.1:8000/
+http://127.0.0.1:8000/upload
+```
+To view history, go to the following link:
+```
+http://127.0.0.1:8000/history
 ```
 
-## Notes
-- This application does not yet include login functionality. All uploads and history are visible without authentication.
-- Future updates may introduce user accounts for better photo management and privacy.
 
