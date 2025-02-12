@@ -1,8 +1,29 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import loader
 from django.conf import settings
 from . import forms
 from port_inspector_app.models import Image, SpecimenUpload
+
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, logout
+
+def login_view(request):
+    # if receiving a POST method, user is attempting to login
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+        # if user is properly authenticated
+        if form.is_valid():
+            login(request, form.get_user())
+            return redirect("/upload/") # after the user logs in, send them to the homepage
+    # if user is already logged in, redirect
+    elif request.user.is_authenticated:
+        return redirect('/upload/')
+    # if requesting the page, prompt form for authentication
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'login.html', { 'form' : form })
 
 
 # Create your views here.

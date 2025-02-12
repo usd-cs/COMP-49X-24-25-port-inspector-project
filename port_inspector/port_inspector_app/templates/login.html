@@ -1,0 +1,83 @@
+<style>
+    /* Basic Reset and Background */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+
+    /* Container Styling */
+    .login-container {
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+        background-color: #ffffff;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    /* Title Styling */
+    h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #333;
+    }
+
+    /* Form Styling */
+    .form-with-validation {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-with-validation input[type="text"],
+    .form-with-validation input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .form-with-validation input[type="text"]:focus,
+    .form-with-validation input[type="password"]:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+
+    /* Button Styling */
+    .button {
+        padding: 10px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+
+<div class="login-container">
+    <h1>Login</h1>
+    
+    <form class="form-with-validation" action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <br/>
+        <button class="button"">Login</button> 
+    </form>
+</div>

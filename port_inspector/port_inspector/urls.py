@@ -22,7 +22,8 @@ from . import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('upload/', views.upload_image),
-    path('history/', views.view_history),
+    path('upload/', views.upload_image, name='upload'),
+    path('history/', views.view_history, name='history'),
+    path('login/', views.login_view, name='login'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # storing uploaded images to our MEDIA_URL
