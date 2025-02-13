@@ -24,5 +24,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('upload/', views.upload_image),
     path('history/', views.view_history),
+    path('signup/', views.signup_view, name='signup'),
+    path('verify-email/', views.verify_email, name='verify-email'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 # storing uploaded images to our MEDIA_URL

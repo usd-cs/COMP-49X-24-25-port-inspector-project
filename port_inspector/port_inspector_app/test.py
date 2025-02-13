@@ -2,8 +2,20 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from .models import User, SpecimenUpload, Image
 from django.core.files.uploadedfile import SimpleUploadedFile
-# flake8: noqa
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
+
+class SignupTestCase(TestCase):
+    def test_user_signup(self):
+        response = self.client.post('/signup/', {  # Update URL as needed
+            'email': 'test@example.com',
+            'password': 'securepassword'
+        })
+        self.assertEqual(response.status_code, 302)  # Redirects to 'verify-email' or 'next'
+        user_exists = User.objects.filter(email='test@example.com').exists()
+        self.assertTrue(user_exists)
+        
 class SpecimenUploadModelTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(email="test@example.com", password="password123")
