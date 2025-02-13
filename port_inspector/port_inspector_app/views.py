@@ -32,7 +32,7 @@ def signup_view(request):
     context = {
         'form': form
     }
-    return render(request, 'templates/signup.html', context)
+    return render(request, 'signup.html', context)
 
 
 # Create your views here.
