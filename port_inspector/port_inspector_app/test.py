@@ -4,7 +4,6 @@ from .models import User, SpecimenUpload, Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
 
-User = get_user_model()
 
 class SignupTestCase(TestCase):
     def test_user_signup(self):
@@ -15,11 +14,12 @@ class SignupTestCase(TestCase):
         self.assertEqual(response.status_code, 302)  # Redirects to 'verify-email' or 'next'
         user_exists = User.objects.filter(email='test@example.com').exists()
         self.assertTrue(user_exists)
-        
+
+
 class SpecimenUploadModelTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(email="test@example.com", password="password123")
-    
+
     def test_create_specimen_upload_with_images_valid(self):
         specimen_upload = SpecimenUpload.objects.create(user=self.user)
         image1 = Image.objects.create(
@@ -71,7 +71,7 @@ class SpecimenUploadIntegrationTests(TestCase):
     def test_user_upload_workflow(self):
         # Create SpecimenUpload
         specimen_upload = SpecimenUpload.objects.create(user=self.user)
-        
+
         # Add 3 images
         images = [
             Image.objects.create(
@@ -79,7 +79,7 @@ class SpecimenUploadIntegrationTests(TestCase):
                 image=SimpleUploadedFile(f"image{i}.jpg", b"file_content"),
             ) for i in range(3)
         ]
-        
+
         # Validate SpecimenUpload
         specimen_upload.full_clean()
         # Check that each image filename starts with the expected prefix

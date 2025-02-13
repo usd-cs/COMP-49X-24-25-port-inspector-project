@@ -5,11 +5,12 @@ from . import forms
 from port_inspector_app.models import Image, SpecimenUpload
 from .forms import UserRegisterForm
 from django.contrib.auth import authenticate, get_user_model, login
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect  # , render
+
 
 def verify_email(request):
-    #to be implemented on different branch
     return None
+
 
 def signup_view(request):
     if request.method == "POST":

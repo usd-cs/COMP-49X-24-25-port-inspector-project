@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, get_user_model
 
 User = get_user_model()
 
+
 class UserRegisterForm(forms.ModelForm):
     password = forms.CharField(label='Password')
 
@@ -17,7 +18,6 @@ class UserRegisterForm(forms.ModelForm):
     def clean(self, *args, **kwargs):
         email = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password')
-        password2 = self.cleaned_data.get('password2')
         email_check = User.objects.filter(email=email)
         if email_check.exists():
             raise forms.ValidationError('This Email already exists')
