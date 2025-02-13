@@ -3,6 +3,36 @@ from django.template import loader
 from django.conf import settings
 from . import forms
 from port_inspector_app.models import Image, SpecimenUpload
+from .forms import UserRegisterForm
+from django.contrib.auth import authenticate, get_user_model, login
+from django.shortcuts import redirect  # , render
+
+
+def verify_email(request):
+    return None
+
+
+def signup_view(request):
+    if request.method == "POST":
+        next = request.GET.get('next')
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            password = form.cleaned_data.get('password')
+            user.set_password(password)
+            user.save()
+            new_user = authenticate(email=user.email, password=password)
+            login(request, new_user)
+            if next:
+                return redirect(next)
+            else:
+                return redirect('verify-email')
+    else:
+        form = UserRegisterForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'user/signup.html', context)
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
