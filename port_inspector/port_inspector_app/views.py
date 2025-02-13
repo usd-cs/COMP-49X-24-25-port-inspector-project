@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout
 
+
 def login_view(request):
     # if receiving a POST method, user is attempting to login
     if request.method == "POST":
@@ -15,7 +16,7 @@ def login_view(request):
         # if user is properly authenticated
         if form.is_valid():
             login(request, form.get_user())
-            return redirect("/upload/") # after the user logs in, send them to the homepage
+            return redirect("/upload/")  # after the user logs in, send them to the homepage
     # if user is already logged in, redirect
     elif request.user.is_authenticated:
         return redirect('/upload/')
@@ -23,7 +24,7 @@ def login_view(request):
     else:
         form = AuthenticationForm()
 
-    return render(request, 'login.html', { 'form' : form })
+    return render(request, 'login.html', {'form': form})
 
 
 # Create your views here.
