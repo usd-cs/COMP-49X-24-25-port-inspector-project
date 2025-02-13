@@ -4,8 +4,9 @@ from django.conf import settings
 from . import forms
 from port_inspector_app.models import Image, SpecimenUpload
 from .forms import UserRegisterForm
-from django.contrib.auth import authenticate, get_user_model, login
-from django.shortcuts import redirect
+from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 
 
 def verify_email(request):
