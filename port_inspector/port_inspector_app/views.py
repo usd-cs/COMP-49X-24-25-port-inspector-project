@@ -54,7 +54,7 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 
-#log the user out and send them back to the upload page
+# log the user out and send them back to the upload page
 def logout_view(request):
     logout(request)
     return redirect("/upload/")
