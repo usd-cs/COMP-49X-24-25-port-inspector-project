@@ -86,7 +86,7 @@ def signup_view(request):
     context = {
         'form': form
     }
-    return render(request, 'user/signup.html', context)
+    return render(request, 'signup.html', context)
 
 
 def login_view(request):
