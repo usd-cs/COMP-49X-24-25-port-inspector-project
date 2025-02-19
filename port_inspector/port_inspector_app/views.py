@@ -15,16 +15,16 @@ from .tokens import account_activation_token
 from django.core.mail import EmailMessage
 from django.contrib import messages
 
-
+User = get_user_model()
 
 def verify_email(request):
     if request.method == "POST":
-        if request.user.email_is_verified != True:
+        if request.user.is_email_verified != True:
             current_site = get_current_site(request)
             user = request.user
             email = request.user.email
             subject = "Verify Email"
-            message = render_to_string('user/verify_email_message.html', {
+            message = render_to_string('verify-email-message.html', {
                 'request': request,
                 'user': user,
                 'domain': current_site.domain,
@@ -39,11 +39,11 @@ def verify_email(request):
             return redirect('verify-email-done')
         else:
             return redirect('signup')
-    return render(request, 'user/verify_email.html')
+    return render(request, 'verify-email.html')
 
 
 def verify_email_done(request):
-    return render(request, 'users/verify_email_done.html')
+    return render(request, 'verify-email-done.html')
 
 
 def verify_email_confirm(request, uidb64, token):
@@ -53,30 +53,37 @@ def verify_email_confirm(request, uidb64, token):
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
-        user.email_is_verified = True
+        user.is_email_verified = True
         user.save()
         messages.success(request, 'Your email has been verified.')
         return redirect('verify-email-complete')
     else:
         messages.warning(request, 'The link is invalid.')
-    return render(request, 'user/verify_email_confirm.html')
+    return render(request, 'verify-email-confirm.html')
 
 
 def verify_email_complete(request):
-    return render(request, 'user/verify_email_complete.html')
+    return render(request, 'verify-email-complete.html')
 
 
 def signup_view(request):
     if request.method == "POST":
+        print("signup POST request recieved\n")
         next = request.GET.get('next')
         form = UserRegisterForm(request.POST)
         if form.is_valid():
+            print("form valid, creating user...\n")
             user = form.save(commit=False)
             password = form.cleaned_data.get('password')
             user.set_password(password)
             user.save()
             new_user = authenticate(email=user.email, password=password)
-            login(request, new_user)
+            if new_user:
+                print("User authenticated, logging in and redirecting...\n")
+                login(request, new_user)
+                return redirect('verify-email')
+            else:
+                print("Authentication failed")
             if next:
                 return redirect(next)
             else:
