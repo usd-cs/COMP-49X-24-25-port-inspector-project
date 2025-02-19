@@ -136,4 +136,3 @@ EMAIL_HOST_PASSWORD = "ogxo gxzh acjz hrwu"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "BeetleID usdportinspector@gmail.com"
-

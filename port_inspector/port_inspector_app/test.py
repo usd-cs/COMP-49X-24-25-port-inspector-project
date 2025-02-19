@@ -10,11 +10,11 @@ from django.utils.encoding import force_bytes
 from .tokens import account_activation_token
 
 
-User = get_user_model()
+User = get_user_model()  # noqa: F811
 
 
 class EmailVerificationTests(TestCase):
-    
+
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(email="testuser@example.com", password="testpassword")
@@ -42,6 +42,7 @@ class EmailVerificationTests(TestCase):
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_email_verified)
         self.assertContains(response, "The link is invalid.")
+
 
 class SignupTestCase(TestCase):
     def test_user_signup(self):

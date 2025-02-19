@@ -17,9 +17,10 @@ from django.contrib import messages
 
 User = get_user_model()
 
+
 def verify_email(request):
     if request.method == "POST":
-        if request.user.is_email_verified != True:
+        if not request.user.is_email_verified:
             current_site = get_current_site(request)
             user = request.user
             email = request.user.email
@@ -28,8 +29,8 @@ def verify_email(request):
                 'request': request,
                 'user': user,
                 'domain': current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                'token':account_activation_token.make_token(user),
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
             })
             email = EmailMessage(
                 subject, message, to=[email]
