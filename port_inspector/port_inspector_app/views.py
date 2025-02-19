@@ -66,11 +66,15 @@ def upload_image(request):
     if request.method == "POST":
         # form filled with the request information
         image_form = forms.ImageForm(request.POST, request.FILES)
-        if image_form.is_valid():
+
+        # if user is not yet logged in, prompt them to login
+        if not request.user.is_authenticated:
+            return redirect("/login/")
+        # otherwise, validate the form
+        elif image_form.is_valid():
             # generate a new specimen upload
             specimen_upload = SpecimenUpload()
-            # TODO implement user session
-            specimen_upload.user = None  # placeholder, set user to null for now
+            specimen_upload.user = request.user
 
             new_image = image_form.save(commit=False)
             new_image.specimen_upload = specimen_upload
@@ -85,5 +89,12 @@ def upload_image(request):
 
 
 def view_history(request):
-    image_sets = Image.objects.all()
-    return render(request, 'history.html', {'images': image_sets, 'MEDIA_URL': settings.MEDIA_URL})
+    print(type(Image.objects.all()))
+
+    images = Image.objects.none()
+    if request.user.is_authenticated:
+        for upload in SpecimenUpload.objects.filter(user=request.user):
+            # append relevant images to our set
+            images = images | Image.objects.filter(specimen_upload=upload)
+        print(request.user, images)
+    return render(request, 'history.html', {'images': images, 'MEDIA_URL': settings.MEDIA_URL})
