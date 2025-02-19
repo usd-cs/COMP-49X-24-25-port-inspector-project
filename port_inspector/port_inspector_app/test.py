@@ -1,9 +1,47 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.core.exceptions import ValidationError
 from .models import User, SpecimenUpload, Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
+from django.urls import reverse
+from django.core import mail
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from .tokens import account_activation_token
 
+
+User = get_user_model()
+
+
+class EmailVerificationTests(TestCase):
+    
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(email="testuser@example.com", password="testpassword")
+        self.user.is_email_verified = False
+        self.user.save()
+
+    def test_verify_email_view_sends_email(self):
+        self.client.login(email="testuser@example.com", password="testpassword")
+        response = self.client.post(reverse("verify-email"))
+        self.assertEqual(response.status_code, 302)  # Redirect to verify-email-done
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("Verify Email", mail.outbox[0].subject)
+
+    def test_verify_email_confirm_valid_token(self):
+        uid = urlsafe_base64_encode(force_bytes(self.user.pk))
+        token = account_activation_token.make_token(self.user)
+        response = self.client.get(reverse("verify-email-confirm", args=[uid, token]))
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_email_verified)
+        self.assertRedirects(response, reverse("verify-email-complete"))
+
+    def test_verify_email_confirm_invalid_token(self):
+        uid = urlsafe_base64_encode(force_bytes(self.user.pk))
+        response = self.client.get(reverse("verify-email-confirm", args=[uid, "invalid-token"]))
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_email_verified)
+        self.assertContains(response, "The link is invalid.")
 
 class SignupTestCase(TestCase):
     def test_user_signup(self):

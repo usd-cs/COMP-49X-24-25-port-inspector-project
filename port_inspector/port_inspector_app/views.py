@@ -72,14 +72,12 @@ def signup_view(request):
         next = request.GET.get('next')
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            print("form valid, creating user...\n")
             user = form.save(commit=False)
             password = form.cleaned_data.get('password')
             user.set_password(password)
             user.save()
             new_user = authenticate(email=user.email, password=password)
             if new_user:
-                print("User authenticated, logging in and redirecting...\n")
                 login(request, new_user)
                 return redirect('verify-email')
             else:
@@ -88,6 +86,8 @@ def signup_view(request):
                 return redirect(next)
             else:
                 return redirect('verify-email')
+        else:
+            print("ERROR: Email already in use or passwords do not match\n")
     else:
         form = UserRegisterForm()
     context = {
