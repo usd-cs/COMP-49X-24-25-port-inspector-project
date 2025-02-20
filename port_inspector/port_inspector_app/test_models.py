@@ -73,3 +73,23 @@ class SpecimenUploadIntegrationTests(TestCase):
         # Check that each image filename starts with the expected prefix
         for i, img in enumerate(images):
             self.assertTrue(img.image.name.startswith(f"uploads/image{i}"))
+
+class UserEmailIntegrationTests(TestCase):
+    def test_user_email_valid(self):
+        # Test creating a user with a valid email
+        valid_email = "validuser@example.com"
+        user = User.objects.create_user(email=valid_email, password="securepassword123")
+        user.full_clean()  # Should not raise an error
+        
+        # Verify user was saved correctly
+        retrieved_user = User.objects.get(email=valid_email)
+        self.assertEqual(retrieved_user.email, valid_email)
+
+    def test_user_email_invalid(self):
+        # Test creating a user with an invalid email
+        invalid_email = "invaliduser"
+        user = User(email=invalid_email, password="securepassword123")
+        
+        with self.assertRaises(ValidationError):
+            user.full_clean()  # Should raise ValidationError due to invalid email format
+
