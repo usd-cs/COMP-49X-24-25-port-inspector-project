@@ -96,5 +96,4 @@ def view_history(request):
         for upload in SpecimenUpload.objects.filter(user=request.user):
             # append relevant images to our set
             images = images | Image.objects.filter(specimen_upload=upload)
-        print(request.user, images)
     return render(request, 'history.html', {'images': images, 'MEDIA_URL': settings.MEDIA_URL})
