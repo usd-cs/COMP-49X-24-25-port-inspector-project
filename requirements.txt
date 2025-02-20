@@ -5,3 +5,4 @@ sqlparse==0.4.3
 tzdata==2022.7
 whitenoise==6.2.0
 Pillow
+six
