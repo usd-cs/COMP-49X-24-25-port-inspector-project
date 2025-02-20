@@ -43,6 +43,32 @@ class EmailVerificationTests(TestCase):
         self.assertFalse(self.user.is_email_verified)
         self.assertContains(response, "The link is invalid.")
 
+class UserEmailIntegrationTests(TestCase):
+    def test_user_email_valid(self):
+        # Test creating a user with a valid email
+        valid_email = "validuser@example.com"
+        user = User.objects.create_user(email=valid_email, password="securepassword123")
+        user.full_clean()  # Should not raise an error
+        
+        # Verify user was saved correctly
+        retrieved_user = User.objects.get(email=valid_email)
+        self.assertEqual(retrieved_user.email, valid_email)
+
+    def test_user_email_invalid(self):
+        # Test creating a user with an invalid email
+        invalid_email = "invaliduser"
+        user = User(email=invalid_email, password="securepassword123")
+        
+        with self.assertRaises(ValidationError):
+            user.full_clean()  # Should raise ValidationError due to invalid email format
+
+    def test_user_login_integration(self):
+        # Test user login with valid credentials
+        valid_email = "validlogin@example.com"
+        password = "securepassword123"
+        User.objects.create_user(email=valid_email, password=password)
+        response = self.client.post(reverse('login'), {'email': valid_email, 'password': password})
+        self.assertEqual(response.status_code, 200)  # Check successful login
 
 class SignupTestCase(TestCase):
     def test_user_signup(self):
