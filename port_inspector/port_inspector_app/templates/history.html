@@ -150,7 +150,7 @@
                 <tr>
                     <td>{{ image.uploaded_at.date }}</td>
                     <td>{{ image.uploaded_at.time }}</td>
-                    <td><a href="#" class="view-link" onclick="openModal('{{ MEDIA_URL }}{{ image.image }}')">view</a></td>
+                    <td><a class="view-link" onclick="openModal('{{ MEDIA_URL }}{{ image.image }}')">view</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
