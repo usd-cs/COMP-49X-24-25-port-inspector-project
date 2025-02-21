@@ -1,12 +1,12 @@
 from django.test import TestCase, Client
 from django.core.exceptions import ValidationError
-from .models import User, SpecimenUpload, Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.core import mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
+from .models import User, SpecimenUpload, Image
 from .tokens import account_activation_token
 
 
@@ -43,45 +43,44 @@ class EmailVerificationTests(TestCase):
         self.assertFalse(self.user.is_email_verified)
         self.assertContains(response, "The link is invalid.")
 
+
 class UserEmailIntegrationTests(TestCase):
+
     def test_user_email_valid(self):
-        # Test creating a user with a valid email
         valid_email = "validuser@example.com"
         user = User.objects.create_user(email=valid_email, password="securepassword123")
-        user.full_clean()  # Should not raise an error
-        
-        # Verify user was saved correctly
+        user.full_clean()
         retrieved_user = User.objects.get(email=valid_email)
         self.assertEqual(retrieved_user.email, valid_email)
 
     def test_user_email_invalid(self):
-        # Test creating a user with an invalid email
         invalid_email = "invaliduser"
         user = User(email=invalid_email, password="securepassword123")
-        
         with self.assertRaises(ValidationError):
-            user.full_clean()  # Should raise ValidationError due to invalid email format
+            user.full_clean()
 
     def test_user_login_integration(self):
-        # Test user login with valid credentials
         valid_email = "validlogin@example.com"
         password = "securepassword123"
         User.objects.create_user(email=valid_email, password=password)
         response = self.client.post(reverse('login'), {'email': valid_email, 'password': password})
-        self.assertEqual(response.status_code, 200)  # Check successful login
+        self.assertEqual(response.status_code, 200)
+
 
 class SignupTestCase(TestCase):
+
     def test_user_signup(self):
-        response = self.client.post('/signup/', {  # Update URL as needed
+        response = self.client.post('/signup/', {
             'email': 'test@example.com',
             'password': 'securepassword'
         })
-        self.assertEqual(response.status_code, 302)  # Redirects to 'verify-email' or 'next'
+        self.assertEqual(response.status_code, 302)
         user_exists = User.objects.filter(email='test@example.com').exists()
         self.assertTrue(user_exists)
 
 
 class SpecimenUploadModelTests(TestCase):
+
     def setUp(self):
         self.user = User.objects.create_user(email="test@example.com", password="password123")
 
@@ -117,6 +116,7 @@ class SpecimenUploadModelTests(TestCase):
 
 
 class ImageModelTests(TestCase):
+
     def setUp(self):
         self.user = User.objects.create_user(email="test@example.com", password="password123")
         self.specimen_upload = SpecimenUpload.objects.create(user=self.user)
@@ -130,23 +130,18 @@ class ImageModelTests(TestCase):
 
 
 class SpecimenUploadIntegrationTests(TestCase):
+
     def setUp(self):
         self.user = User.objects.create_user(email="test@example.com", password="password123")
 
     def test_user_upload_workflow(self):
-        # Create SpecimenUpload
         specimen_upload = SpecimenUpload.objects.create(user=self.user)
-
-        # Add 3 images
         images = [
             Image.objects.create(
                 specimen_upload=specimen_upload,
                 image=SimpleUploadedFile(f"image{i}.jpg", b"file_content"),
             ) for i in range(3)
         ]
-
-        # Validate SpecimenUpload
         specimen_upload.full_clean()
-        # Check that each image filename starts with the expected prefix
         for i, img in enumerate(images):
             self.assertTrue(img.image.name.startswith(f"uploads/image{i}"))
