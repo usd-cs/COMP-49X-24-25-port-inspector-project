@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload an Image</title>
+    <title>Upload Specimen Photos</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -43,7 +43,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 300px;
+            width: 400px;
             margin-top: 50px;
         }
         h1 {
@@ -55,13 +55,27 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
+        }
+        .upload-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .upload-label {
+            width: 30%;
+            text-align: left;
+            font-size: 14px;
+            font-weight: bold;
         }
         .upload-btn {
             background-color: #1a73e8;
             color: white;
             border: none;
             border-radius: 5px;
-            padding: 10px 20px;
+            padding: 8px 15px;
             cursor: pointer;
             font-size: 14px;
         }
@@ -69,7 +83,21 @@
             background-color: #155cb0;
         }
         input[type="file"] {
-            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+        .submit-btn {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            background-color: #155cb0;
         }
         footer {
             margin-top: 20px;
@@ -92,11 +120,35 @@
         {% endif %}
     </header>
     <div class="container">
-        <h1>Upload an Image</h1>
+        <h1>Upload Specimen Photos</h1>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="file" name="image" accept="image/*" required>
-            <button type="submit" class="upload-btn">Upload Photo</button>
+            
+            <div class="upload-group">
+                <label class="upload-label">Caudal</label>
+                <input type="file" name="caudal_image" accept="image/*" required>
+                <button type="button" class="upload-btn">Upload Photo</button>
+            </div>
+
+            <div class="upload-group">
+                <label class="upload-label">Frontal</label>
+                <input type="file" name="frontal_image" accept="image/*" required>
+                <button type="button" class="upload-btn">Upload Photo</button>
+            </div>
+
+            <div class="upload-group">
+                <label class="upload-label">Dorsal</label>
+                <input type="file" name="dorsal_image" accept="image/*" required>
+                <button type="button" class="upload-btn">Upload Photo</button>
+            </div>
+
+            <div class="upload-group">
+                <label class="upload-label">Lateral</label>
+                <input type="file" name="lateral_image" accept="image/*" required>
+                <button type="button" class="upload-btn">Upload Photo</button>
+            </div>
+
+            <button type="submit" class="submit-btn">Upload Specimen</button>
         </form>
     </div>
     <footer>
@@ -104,4 +156,3 @@
     </footer>
 </body>
 </html>
-
