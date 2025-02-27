@@ -48,6 +48,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
+def default_genus():
+    return {"id": None, "confidence": 0.0}  # Ensures genus always has an initial structure
+
+
+def default_species():
+    return [{"id": None, "confidence": 0.0}]  # Ensures species always has at least one entry
+
+
 class SpecimenUpload(models.Model):
     id = models.AutoField(primary_key=True)  # Explicit primary key
 
@@ -55,8 +63,8 @@ class SpecimenUpload(models.Model):
 
     upload_date = models.DateTimeField(auto_now_add=True)
 
-    genus = models.JSONField(default=dict)  # Stores (genus id, confidence level) as a dictionary
-    species = models.JSONField(default=list)  # Stores list of (species id, confidence level) tuples
+    genus = models.JSONField(default=default_genus)  # Stores (genus id, confidence level) as a dictionary
+    species = models.JSONField(default=default_species)  # Stores list of (species id, confidence level) tuples
 
     def clean(self):
         # Perform validation after saving
@@ -65,8 +73,8 @@ class SpecimenUpload(models.Model):
             raise ValidationError(f"A SpecimenUpload must have between 1 and 5 images. Found {num_images}.")
 
         # Validate genus format
-        if not isinstance(self.genus, list) or len(self.genus) != 2:
-            raise ValidationError("Genus must be a list containing [genus_id, confidence_level].")
+        if len(self.genus) != 2:
+            raise ValidationError("Genus must be a tuple containing [genus_id, confidence_level].")
 
         # Validate species format
         if not isinstance(self.species, list) or not (1 <= len(self.species) <= 5):
