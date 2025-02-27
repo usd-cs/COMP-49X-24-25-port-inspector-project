@@ -88,6 +88,7 @@ class Image(models.Model):
     def __str__(self):
         return f"Image #{self.id} for SpecimenUpload #{self.specimen_upload.id} uploaded at {self.uploaded_at}"
 
+
 class KnownSpecies(models.Model):
     id_num = models.AutoField(primary_key=True)
     species_name = models.CharField(max_length=255, unique=True)
@@ -95,6 +96,7 @@ class KnownSpecies(models.Model):
 
     def __str__(self):
         return self.species_name
+
 
 class Genus(models.Model):
     id_num = models.AutoField(primary_key=True)
