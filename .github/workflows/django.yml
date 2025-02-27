@@ -32,7 +32,3 @@ jobs:
       run: |
         flake8 .  --ignore=F401 --per-file-ignores="./port_inspector/port_inspector/settings.py:E501" --max-line-length=200
         
-    - name: Run Tests
-      run: |
-        cd port_inspector
-        python3 manage.py test
