@@ -55,11 +55,23 @@ class SpecimenUpload(models.Model):
 
     upload_date = models.DateTimeField(auto_now_add=True)
 
+    genus = models.JSONField(default=dict)  # Stores (genus id, confidence level) as a dictionary
+    species = models.JSONField(default=list)  # Stores list of (species id, confidence level) tuples
+
     def clean(self):
         # Perform validation after saving
         num_images = self.images.count()
         if num_images < 1 or num_images > 5:
             raise ValidationError(f"A SpecimenUpload must have between 1 and 5 images. Found {num_images}.")
+            
+        # Validate genus format
+        if not isinstance(self.genus, list) or len(self.genus) != 2:
+            raise ValidationError("Genus must be a list containing [genus_id, confidence_level].")
+
+        # Validate species format
+        if not isinstance(self.species, list) or not (1 <= len(self.species) <= 5):
+            raise ValidationError("Species must be a list of 1 to 5 [species_id, confidence_level] tuples.")
+
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -76,3 +88,21 @@ class Image(models.Model):
 
     def __str__(self):
         return f"Image #{self.id} for SpecimenUpload #{self.specimen_upload.id} uploaded at {self.uploaded_at}"
+
+
+class KnownSpecies(models.Model):
+    id_num = models.AutoField(primary_key=True)
+    species_name = models.CharField(max_length=255, unique=True)
+    resource_link = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return self.species_name
+
+
+class Genus(models.Model):
+    id_num = models.AutoField(primary_key=True)
+    genus_name = models.CharField(max_length=255, unique=True)
+    resource_link = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return self.genus_name
