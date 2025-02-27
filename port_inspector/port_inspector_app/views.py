@@ -158,3 +158,34 @@ def view_history(request):
             # append relevant images to our set
             images = images | Image.objects.filter(specimen_upload=upload)
     return render(request, 'history.html', {'images': images, 'MEDIA_URL': settings.MEDIA_URL})
+
+def results_view(request):
+    # Dummy data for now (to be replaced with actual ML model results)
+    species_results = [
+        {"name": "Genus", "confidence": 95.22, "link": "#"},
+        {"name": "Species 1", "confidence": 33.4, "link": "#"},
+        {"name": "Species 2", "confidence": 5.78, "link": "#"},
+        {"name": "Species 3", "confidence": 3.14, "link": "#"},
+        {"name": "Species 4", "confidence": 2.09, "link": "#"},
+        {"name": "Species 5", "confidence": 1.75, "link": "#"},
+    ]
+
+    # Sort species results by confidence (highest first)
+    species_results.sort(key=lambda x: x["confidence"], reverse=True)
+
+    # Get likely species (highest confidence, ignoring Genus)
+    likely_species = species_results[1]["name"] if len(species_results) > 1 else "Unknown"
+
+    # Dummy image URLs (replace with actual uploaded images)
+    image_urls = [
+        "/static/images/sample1.jpg",
+        "/static/images/sample2.jpg",
+        "/static/images/sample3.jpg",
+        "/static/images/sample4.jpg",
+    ]
+
+    return render(request, "results.html", {
+        "species_results": species_results[:6],  # Ensure 5 species + Genus are displayed
+        "likely_species": likely_species,
+        "image_urls": image_urls,
+    })
