@@ -63,7 +63,7 @@ class SpecimenUpload(models.Model):
         num_images = self.images.count()
         if num_images < 1 or num_images > 5:
             raise ValidationError(f"A SpecimenUpload must have between 1 and 5 images. Found {num_images}.")
-            
+
         # Validate genus format
         if not isinstance(self.genus, list) or len(self.genus) != 2:
             raise ValidationError("Genus must be a list containing [genus_id, confidence_level].")
@@ -71,7 +71,6 @@ class SpecimenUpload(models.Model):
         # Validate species format
         if not isinstance(self.species, list) or not (1 <= len(self.species) <= 5):
             raise ValidationError("Species must be a list of 1 to 5 [species_id, confidence_level] tuples.")
-
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
