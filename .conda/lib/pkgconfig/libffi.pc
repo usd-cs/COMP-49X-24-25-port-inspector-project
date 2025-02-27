@@ -1,0 +1,11 @@
+prefix=/Users/saraevans/COMP-49X-24-25-port-inspector-project/.conda
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+toolexeclibdir=${libdir}
+includedir=/Users/saraevans/COMP-49X-24-25-port-inspector-project/.conda/include
+
+Name: libffi
+Description: Library supporting Foreign Function Interfaces
+Version: 3.4.4
+Libs: -L${toolexeclibdir} -lffi
+Cflags: -I${includedir}

@@ -1,0 +1,5 @@
+#!/Users/saraevans/COMP-49X-24-25-port-inspector-project/.conda/bin/python3.11
+
+from idlelib.pyshell import main
+if __name__ == '__main__':
+    main()

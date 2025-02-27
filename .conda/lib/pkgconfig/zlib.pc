@@ -1,0 +1,13 @@
+prefix=/Users/saraevans/COMP-49X-24-25-port-inspector-project/.conda
+exec_prefix=/Users/saraevans/COMP-49X-24-25-port-inspector-project/.conda
+libdir=/Users/saraevans/COMP-49X-24-25-port-inspector-project/.conda/lib
+sharedlibdir=/Users/saraevans/COMP-49X-24-25-port-inspector-project/.conda/lib
+includedir=/Users/saraevans/COMP-49X-24-25-port-inspector-project/.conda/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}
