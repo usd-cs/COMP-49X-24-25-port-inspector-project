@@ -31,6 +31,7 @@ urlpatterns = [
     path('verify-email/done/', views.verify_email_done, name='verify-email-done'),
     path('verify-email-confirm/<uidb64>/<token>/', views.verify_email_confirm, name='verify-email-confirm'),
     path('verify-email/complete/', views.verify_email_complete, name='verify-email-complete'),
+    path('results/', views.results_view, name='results'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # storing uploaded images to our MEDIA_URL
