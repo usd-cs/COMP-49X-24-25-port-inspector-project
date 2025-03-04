@@ -1,19 +1,20 @@
-from django.shortcuts import render, redirect
-from django.template import loader
 from django.conf import settings
-from . import forms
-from port_inspector_app.models import Image, SpecimenUpload
-from .forms import UserRegisterForm
+from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.template.loader import render_to_string
-from .tokens import account_activation_token
 from django.core.mail import EmailMessage
-from django.contrib import messages
+from django.shortcuts import redirect, render
+from django.template import loader
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from port_inspector_app.models import Image, SpecimenUpload
+
+from . import forms
+from .forms import UserRegisterForm
+from .tokens import account_activation_token
 
 User = get_user_model()
 
@@ -25,115 +26,102 @@ def verify_email(request):
             user = request.user
             email = request.user.email
             subject = "Verify Email"
-            message = render_to_string('verify-email-message.html', {
-                'request': request,
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': account_activation_token.make_token(user),
-            })
-            email = EmailMessage(
-                subject, message, to=[email]
+            message = render_to_string(
+                "verify-email-message.html",
+                {
+                    "request": request,
+                    "user": user,
+                    "domain": current_site.domain,
+                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                    "token": account_activation_token.make_token(user),
+                },
             )
-            email.content_subtype = 'html'
+            email = EmailMessage(subject, message, to=[email])
+            email.content_subtype = "html"
             email.send()
-            return redirect('verify-email-done')
+            return redirect("verify-email-done")
         else:
-            return redirect('signup')
-    return render(request, 'verify-email.html')
+            return redirect("signup")
+    return render(request, "verify-email.html")
 
 
 def verify_email_done(request):
-    return render(request, 'verify-email-done.html')
+    return render(request, "verify-email-done.html")
 
 
 def verify_email_confirm(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):  # noqa: E275
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
+
     if user is not None and account_activation_token.check_token(user, token):
         user.is_email_verified = True
         user.save()
-        messages.success(request, 'Your email has been verified.')
-        return redirect('verify-email-complete')
+        messages.success(request, "Your email has been verified.")
+        return redirect("verify-email-complete")
     else:
-        messages.warning(request, 'The link is invalid.')
-    return render(request, 'verify-email-confirm.html')
+        messages.warning(request, "The link is invalid.")
+    return render(request, "verify-email-confirm.html")
 
 
 def verify_email_complete(request):
-    return render(request, 'verify-email-complete.html')
+    return render(request, "verify-email-complete.html")
 
 
 def signup_view(request):
     if request.method == "POST":
-        print("signup POST request recieved\n")
-        next = request.GET.get('next')
+        print("signup POST request received\n")
+        next_page = request.GET.get("next")
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            password = form.cleaned_data.get('password')
+            password = form.cleaned_data.get("password")
             user.set_password(password)
             user.save()
             new_user = authenticate(email=user.email, password=password)
             if new_user:
                 login(request, new_user)
-                return redirect('verify-email')
+                return redirect("verify-email")
             else:
                 print("Authentication failed")
-            if next:
-                return redirect(next)
+            if next_page:
+                return redirect(next_page)
             else:
-                return redirect('verify-email')
+                return redirect("verify-email")
         else:
             print("ERROR: Email already in use or passwords do not match\n")
     else:
         form = UserRegisterForm()
-    context = {
-        'form': form
-    }
-    return render(request, 'signup.html', context)
+    context = {"form": form}
+    return render(request, "signup.html", context)
 
 
 def login_view(request):
-    # if receiving a POST method, user is attempting to login
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
-        # if user is properly authenticated
         if form.is_valid():
             login(request, form.get_user())
-            return redirect("/upload/")  # after the user logs in, send them to the homepage
-    # if user is already logged in, redirect
+            return redirect("/upload/")
     elif request.user.is_authenticated:
-        return redirect('/upload/')
-    # if requesting the page, prompt form for authentication
+        return redirect("/upload/")
     else:
         form = AuthenticationForm()
+    return render(request, "login.html", {"form": form})
 
-    return render(request, 'login.html', {'form': form})
 
-
-# log the user out and send them back to the upload page
 def logout_view(request):
     logout(request)
     return redirect("/upload/")
 
 
-# Create your views here.
 def upload_image(request):
-    # if the user is attempting to POST, aka submitting the form
     if request.method == "POST":
-        # form filled with the request information
         image_form = forms.ImageForm(request.POST, request.FILES)
-
-        # if user is not yet logged in, prompt them to login
         if not request.user.is_authenticated:
             return redirect("/login/")
-        # otherwise, validate the form
         elif image_form.is_valid():
-            # generate a new specimen upload
             specimen_upload = SpecimenUpload()
             specimen_upload.user = request.user
 
@@ -142,11 +130,9 @@ def upload_image(request):
 
             specimen_upload.save()
             new_image.save()
-            # potentially redirect to a new page here
-    # else it is a GET request, meaning the user is requesting the page, in which we should give them an empty form
     else:
         image_form = forms.ImageForm()
-    return render(request, 'upload_photo.html', {'form': image_form})
+    return render(request, "upload_photo.html", {"form": image_form})
 
 
 def view_history(request):
@@ -155,6 +141,41 @@ def view_history(request):
     images = Image.objects.none()
     if request.user.is_authenticated:
         for upload in SpecimenUpload.objects.filter(user=request.user):
-            # append relevant images to our set
             images = images | Image.objects.filter(specimen_upload=upload)
-    return render(request, 'history.html', {'images': images, 'MEDIA_URL': settings.MEDIA_URL})
+    return render(
+        request, "history.html", {"images": images, "MEDIA_URL": settings.MEDIA_URL}
+    )
+
+
+def results_view(request):
+    species_results = [
+        {"name": "Genus", "confidence": 95.22, "link": "#"},
+        {"name": "Species 1", "confidence": 33.4, "link": "#"},
+        {"name": "Species 2", "confidence": 5.78, "link": "#"},
+        {"name": "Species 3", "confidence": 3.14, "link": "#"},
+        {"name": "Species 4", "confidence": 2.09, "link": "#"},
+        {"name": "Species 5", "confidence": 1.75, "link": "#"},
+    ]
+
+    species_results.sort(key=lambda x: x["confidence"], reverse=True)
+
+    likely_species = (
+        species_results[1]["name"] if len(species_results) > 1 else "Unknown"
+    )
+
+    image_urls = [
+        "/static/images/sample1.jpg",
+        "/static/images/sample2.jpg",
+        "/static/images/sample3.jpg",
+        "/static/images/sample4.jpg",
+    ]
+
+    return render(
+        request,
+        "results.html",
+        {
+            "species_results": species_results[:6],
+            "likely_species": likely_species,
+            "image_urls": image_urls,
+        },
+    )
