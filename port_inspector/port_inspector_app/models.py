@@ -49,11 +49,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 def default_genus():
-    return (None, 0.0) # Ensures genus always has an initial structure
+    return (None, 0.0)
 
 
 def default_species():
-    return [(None, 0.0)]  # Ensures species always has at least one entry
+    return [(None, 0.0)]
 
 
 class SpecimenUpload(models.Model):
@@ -63,8 +63,8 @@ class SpecimenUpload(models.Model):
 
     upload_date = models.DateTimeField(auto_now_add=True)
 
-    genus = models.JSONField(default=default_genus)  
-    species = models.JSONField(default=default_species)  
+    genus = models.JSONField(default=default_genus)
+    species = models.JSONField(default=default_species)
 
     def clean(self):
         # Perform validation after saving
