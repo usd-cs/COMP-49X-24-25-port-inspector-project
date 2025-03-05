@@ -135,8 +135,6 @@ def upload_image(request):
 
 
 def view_history(request):
-    print(type(Image.objects.all()))
-
     images = Image.objects.none()
     if request.user.is_authenticated:
         for upload in SpecimenUpload.objects.filter(user=request.user):
@@ -147,20 +145,28 @@ def view_history(request):
 
 
 def results_view(request):
-    # Fetch known species and genus from the database
+    """
+    Fetches species and genus dynamically from the database instead of hardcoding them.
+    """
+
+    # Fetch known species from the database
     species_results = list(KnownSpecies.objects.all().values("species_name", "resource_link", "confidence_level"))
-    
-    # Fetch the first genus (assuming there's only one, modify logic if needed)
+
+    # Fetch the first genus (assuming only one genus exists)
     genus = Genus.objects.first()
 
     # Ensure genus appears at the top of the list
     if genus:
-        species_results.insert(0, {"species_name": genus.genus_name, "resource_link": genus.resource_link, "confidence_level": genus.confidence_level})
+        species_results.insert(0, {
+            "species_name": genus.genus_name,
+            "resource_link": genus.resource_link,
+            "confidence_level": genus.confidence_level
+        })
 
-    # Sort by confidence level (highest first)
+    # Sort species and genus by confidence level (highest first)
     species_results.sort(key=lambda x: x["confidence_level"], reverse=True)
 
-    # Get the most likely species (ignoring the genus)
+    # Determine the most likely species (excluding genus)
     likely_species = species_results[1]["species_name"] if len(species_results) > 1 else "Unknown"
 
     # Dummy image URLs (replace with actual uploaded images if needed)
