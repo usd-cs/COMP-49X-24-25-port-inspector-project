@@ -97,10 +97,13 @@ class Image(models.Model):
         return f"Image #{self.id} for SpecimenUpload #{self.specimen_upload.id} uploaded at {self.uploaded_at}"
 
 
+from django.db import models
+
 class KnownSpecies(models.Model):
     id_num = models.AutoField(primary_key=True)
     species_name = models.CharField(max_length=255, unique=True)
     resource_link = models.URLField(blank=True, null=True)
+    confidence_level = models.FloatField(default=0.0)  # NEW FIELD
 
     def __str__(self):
         return self.species_name
@@ -110,6 +113,11 @@ class Genus(models.Model):
     id_num = models.AutoField(primary_key=True)
     genus_name = models.CharField(max_length=255, unique=True)
     resource_link = models.URLField(blank=True, null=True)
+    confidence_level = models.FloatField(default=100.0)  # NEW FIELD
+
+    def __str__(self):
+        return self.genus_name
+
 
     def __str__(self):
         return self.genus_name
