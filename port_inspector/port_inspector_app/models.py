@@ -101,6 +101,7 @@ class KnownSpecies(models.Model):
     id_num = models.AutoField(primary_key=True)
     species_name = models.CharField(max_length=255, unique=True)
     resource_link = models.URLField(blank=True, null=True)
+    confidence_level = models.FloatField(default=0.0)  # ADD THIS LINE
 
     def __str__(self):
         return self.species_name
@@ -110,6 +111,7 @@ class Genus(models.Model):
     id_num = models.AutoField(primary_key=True)
     genus_name = models.CharField(max_length=255, unique=True)
     resource_link = models.URLField(blank=True, null=True)
+    confidence_level = models.FloatField(default=0.0)  # ADD THIS LINE
 
     def __str__(self):
         return self.genus_name
