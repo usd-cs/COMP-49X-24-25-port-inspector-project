@@ -109,15 +109,18 @@
        <a href="/upload" class="icon">📤<span>Upload Photo</span></a>
        <a href="/logout" class="icon">👤<span>Profile</span></a>
    </header>
+
    <div class="container">
        <div class="image-section">
            {% for image in image_urls %}
                <img src="{{ image }}" alt="Uploaded Image">
            {% endfor %}
        </div>
+
        <div class="results-section">
            <h1>Upload #23456</h1>
            <p><strong>Likely Species:</strong> <span id="likely-species">{{ likely_species }}</span></p>
+           
            <table>
                <tr>
                    <th>Genus/Species Name</th>
@@ -128,9 +131,9 @@
                <tr>
                    <td>{{ species.name }}</td>
                    <td class="
-                       {% if species.confidence > 50 %}
+                       {% if species.confidence >= 50 %}
                            confidence-high
-                       {% elif species.confidence > 20 %}
+                       {% elif species.confidence >= 20 %}
                            confidence-medium
                        {% else %}
                            confidence-low
@@ -138,10 +141,11 @@
                    ">
                        {{ species.confidence }}%
                    </td>
-                   <td><a href="{{ species.link }}">more here</a></td>
+                   <td><a href="{{ species.link }}" target="_blank">more here</a></td>
                </tr>
                {% endfor %}
            </table>
+           
            <button class="confirm-btn">Confirm Identification</button>
        </div>
    </div>
