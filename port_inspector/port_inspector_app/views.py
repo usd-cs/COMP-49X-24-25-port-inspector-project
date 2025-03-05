@@ -6,11 +6,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect, render
-from django.template import loader
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from port_inspector_app.models import Image, SpecimenUpload
+from port_inspector_app.models import Image, SpecimenUpload, KnownSpecies, Genus
 
 from . import forms
 from .forms import UserRegisterForm
@@ -148,21 +147,23 @@ def view_history(request):
 
 
 def results_view(request):
-    species_results = [
-        {"name": "Genus", "confidence": 95.22, "link": "#"},
-        {"name": "Species 1", "confidence": 33.4, "link": "#"},
-        {"name": "Species 2", "confidence": 5.78, "link": "#"},
-        {"name": "Species 3", "confidence": 3.14, "link": "#"},
-        {"name": "Species 4", "confidence": 2.09, "link": "#"},
-        {"name": "Species 5", "confidence": 1.75, "link": "#"},
-    ]
+    # Fetch known species and genus from the database
+    species_results = list(KnownSpecies.objects.all().values("species_name", "resource_link", "confidence_level"))
+    
+    # Fetch the first genus (assuming there's only one, modify logic if needed)
+    genus = Genus.objects.first()
 
-    species_results.sort(key=lambda x: x["confidence"], reverse=True)
+    # Ensure genus appears at the top of the list
+    if genus:
+        species_results.insert(0, {"species_name": genus.genus_name, "resource_link": genus.resource_link, "confidence_level": genus.confidence_level})
 
-    likely_species = (
-        species_results[1]["name"] if len(species_results) > 1 else "Unknown"
-    )
+    # Sort by confidence level (highest first)
+    species_results.sort(key=lambda x: x["confidence_level"], reverse=True)
 
+    # Get the most likely species (ignoring the genus)
+    likely_species = species_results[1]["species_name"] if len(species_results) > 1 else "Unknown"
+
+    # Dummy image URLs (replace with actual uploaded images if needed)
     image_urls = [
         "/static/images/sample1.jpg",
         "/static/images/sample2.jpg",
@@ -174,7 +175,7 @@ def results_view(request):
         request,
         "results.html",
         {
-            "species_results": species_results[:6],
+            "species_results": species_results[:6],  # Ensure only 5 species + 1 genus are displayed
             "likely_species": likely_species,
             "image_urls": image_urls,
         },
