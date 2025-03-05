@@ -127,21 +127,42 @@
                    <th>Confidence</th>
                    <th>Identification Resources</th>
                </tr>
-               {% for species in species_results %}
+
+               <!-- Genus row -->
+               {% if species_results %}
+                   <tr>
+                       <td><strong>Genus:</strong> {{ species_results.0.species_name }}</td>
+                       <td class="
+                           {% if species_results.0.confidence_level >= 50 %}
+                               confidence-high
+                           {% elif species_results.0.confidence_level >= 20 %}
+                               confidence-medium
+                           {% else %}
+                               confidence-low
+                           {% endif %}
+                       ">
+                           {{ species_results.0.confidence_level }}%
+                       </td>
+                       <td><a href="{{ species_results.0.resource_link }}" target="_blank">more here</a></td>
+                   </tr>
+               {% endif %}
+
+               <!-- Species rows -->
+               {% for species in species_results|slice:"1:6" %}
                <tr>
-                   <td>{{ species.name }}</td>
+                   <td><strong>Species {{ forloop.counter }}:</strong> {{ species.species_name }}</td>
                    <td class="
-                       {% if species.confidence >= 50 %}
+                       {% if species.confidence_level >= 50 %}
                            confidence-high
-                       {% elif species.confidence >= 20 %}
+                       {% elif species.confidence_level >= 20 %}
                            confidence-medium
                        {% else %}
                            confidence-low
                        {% endif %}
                    ">
-                       {{ species.confidence }}%
+                       {{ species.confidence_level }}%
                    </td>
-                   <td><a href="{{ species.link }}" target="_blank">more here</a></td>
+                   <td><a href="{{ species.resource_link }}" target="_blank">more here</a></td>
                </tr>
                {% endfor %}
            </table>
