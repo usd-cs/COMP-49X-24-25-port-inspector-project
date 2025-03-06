@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
-
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -55,18 +54,20 @@ class SpecimenUpload(models.Model):
 
     upload_date = models.DateTimeField(auto_now_add=True)
 
-    def clean(self):
-        # Perform validation after saving
-        num_images = self.images.count()
-        if num_images < 1 or num_images > 5:
-            raise ValidationError(f"A SpecimenUpload must have between 1 and 5 images. Found {num_images}.")
+    frontal_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.SET_NULL, related_name="frontal_image", null=True, blank=True)
+    dorsal_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.SET_NULL, related_name="dorsal_image", null=True, blank=True)
+    caudal_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.SET_NULL, related_name="caudal_image", null=True, blank=True)
+    lateral_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.SET_NULL, related_name="lateral_image", null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    def clean(self):
+        # Perform validation if we already have a pk and have been saved
+        if self.id:
+            num_images = self.images.count()
+            if num_images < 1 or num_images > 4:
+                raise ValidationError(f"A SpecimenUpload must have between 1 and 4 images. Found {num_images}.")
 
     def __str__(self):
         return f"SpecimenUpload #{self.id} by {self.user.email} on {self.upload_date}"
-
 
 class Image(models.Model):
     id = models.AutoField(primary_key=True)  # Explicit primary key
@@ -76,3 +77,4 @@ class Image(models.Model):
 
     def __str__(self):
         return f"Image #{self.id} for SpecimenUpload #{self.specimen_upload.id} uploaded at {self.uploaded_at}"
+

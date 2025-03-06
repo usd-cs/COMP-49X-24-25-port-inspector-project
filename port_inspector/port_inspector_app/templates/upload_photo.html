@@ -92,11 +92,15 @@
         {% endif %}
     </header>
     <div class="container">
-        <h1>Upload an Image</h1>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="file" name="image" accept="image/*" required>
-            <button type="submit" class="upload-btn">Upload Photo</button>
+
+            <h3>Upload Images</h3>
+            {{ formset.management_form }}
+            {% for form in formset %}
+                {{ form.image }}
+            {% endfor %}
+            <button type="submit" class="upload-btn">Upload Photos</button>
         </form>
     </div>
     <footer>

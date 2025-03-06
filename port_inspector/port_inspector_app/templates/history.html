@@ -146,11 +146,20 @@
                 </tr>
             </thead>
             <tbody>
-                {% for image in images %}
+                {% for date in dates %}
+                    date:{{date}}
+                {% endfor %}
+                {% for upload in uploads %}
                 <tr>
-                    <td>{{ image.uploaded_at.date }}</td>
-                    <td>{{ image.uploaded_at.time }}</td>
-                    <td><a class="view-link" onclick="openModal('{{ MEDIA_URL }}{{ image.image }}')">view</a></td>
+                    <td>{{upload.id}}</td>
+                    <td>{{upload.upload_date}}</td>
+                    <td>{{ upload.upload_date.date|default:"No date" }}</td>
+                    <td>{{ upload.upload_date.time|default:"No time" }}</td>
+                    <td>{{ upload.frontal_image.image.image }}</td>
+                    <td>{{ upload.dorsal_image.image.image }}</td>
+                    <td>{{ upload.caudal_image.image.image }}</td>
+                    <td>{{ upload.lateral_image.image.image }}</td>
+                    <td><a class="view-link" onclick="openModal('{{ MEDIA_URL }}{{ upload.frontal_image.image }}')">view</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
