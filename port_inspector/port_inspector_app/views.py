@@ -144,8 +144,6 @@ def view_history(request):
     )
 
 
-
-
 def results_view(request):
     # This data comes from the BeetleID team
     species_results = [("species1", 95.5), ("species2", 23.9), ("species3", 15.7), ("species4", 12.3), ("species5", 5.5)]

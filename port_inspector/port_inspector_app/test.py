@@ -96,9 +96,10 @@ class SpecimenUploadIntegrationTests(TestCase):
         for img in images:
             self.assertIsInstance(img, MagicMock)
 
+
 class ResultsViewTests(TestCase):
 
-    @patch("port_inspector_app.models.KnownSpecies.objects.filter") 
+    @patch("port_inspector_app.models.KnownSpecies.objects.filter")
     @patch("port_inspector_app.models.Genus.objects.filter")
     def test_results_view(self, mock_genus_filter, mock_species_filter):
         # Mock the return values of the queries
@@ -126,7 +127,7 @@ class ResultsViewTests(TestCase):
             ("species4", "http://species4.com"),  # confidence 12.3
             ("species5", "http://species5.com")   # confidence 5.5
         ]
-        
+
         # Mock genus result
         mock_genus_filter.return_value.values_list.return_value = [("genus1", "http://genus1.com")]
 
@@ -139,12 +140,11 @@ class ResultsViewTests(TestCase):
 
         # Check that the response status code is 200
         self.assertEqual(response.status_code, 200)
-        
+
         html_content = response.content.decode()  # Decode the response to a string
-        
+
         # Check if the first species name in the HTML is 'species1'
         self.assertIn('species1', html_content)  # species1 should be in the HTML
-        
+
         # Check if species1's confidence level appears first in the HTML
         self.assertIn('95.5', html_content)
-   
