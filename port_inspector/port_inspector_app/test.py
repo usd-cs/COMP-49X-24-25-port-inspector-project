@@ -104,7 +104,7 @@ class SpecimenUploadIntegrationTests(TestCase):
         mock_upload.full_clean()
         for img in images:
             self.assertIsInstance(img, MagicMock)
-    
+
     def test_specimen_upload_with_valid_genus_and_species(self):
         # Create a valid SpecimenUpload with a valid genus and species list
         specimen_upload = SpecimenUpload.objects.create(
@@ -139,7 +139,7 @@ class SpecimenUploadIntegrationTests(TestCase):
         images = [MagicMock() for _ in range(3)]
         mock_image_create.side_effect = images
         mock_images.count.return_value = 3  # Simulate 3 images
-        
+
         with self.assertRaises(ValidationError) as context:
             specimen_upload.full_clean()  # Triggers validation
 
@@ -159,7 +159,7 @@ class SpecimenUploadIntegrationTests(TestCase):
         images = [MagicMock() for _ in range(3)]
         mock_image_create.side_effect = images
         mock_images.count.return_value = 3  # Simulate 3 images
-        
+
         # Perform full_clean which triggers validation
         with self.assertRaises(ValidationError) as context:
             specimen_upload.full_clean()
