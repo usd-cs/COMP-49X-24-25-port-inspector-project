@@ -74,11 +74,11 @@ class SpecimenUpload(models.Model):
 
         # Validate genus format
         if len(self.genus) != 2:
-            raise ValidationError("Genus must be a tuple containing [genus_id, confidence_level].")
+            raise ValidationError("Genus must be a tuple containing (genus_id, confidence_level).")
 
         # Validate species format
         if not isinstance(self.species, list) or not (1 <= len(self.species) <= 5):
-            raise ValidationError("Species must be a list of 1 to 5 [species_id, confidence_level] tuples.")
+            raise ValidationError("Species must be a list of 1 to 5 (species_id, confidence_level) tuples.")
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
