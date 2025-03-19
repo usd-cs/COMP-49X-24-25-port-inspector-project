@@ -33,6 +33,7 @@ class ImageForm(forms.ModelForm):
         model = models.Image
         fields = ['image']
 
+
 class SpecimenUploadForm(forms.ModelForm):
     frontal_upload = forms.ImageField(required=False)
     dorsal_upload = forms.ImageField(required=False)
@@ -65,8 +66,7 @@ class SpecimenUploadForm(forms.ModelForm):
             specimen.user = user
 
         if commit:
-            specimen.save() # Must save the SpecimenUpload first
-            print("DATA:",self.cleaned_data)
+            specimen.save()  # Must save the SpecimenUpload first
 
             def generate_image_object(data):
                 if data:
@@ -83,6 +83,6 @@ class SpecimenUploadForm(forms.ModelForm):
             specimen.caudal_image = caudal_obj
             specimen.lateral_image = lateral_obj
 
-            specimen.save() # Save again for the FK fields
+            specimen.save()  # Save again for the FK fields
 
         return specimen

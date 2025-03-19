@@ -6,6 +6,7 @@ from django.core.files.storage import default_storage
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -78,7 +79,7 @@ class SpecimenUpload(models.Model):
             num_images = self.images.count()
             if num_images < 1 or num_images > 4:
                 raise ValidationError(f"A SpecimenUpload must have between 1 and 4 images. Found {num_images}.")
-        
+
         # Validate genus format
         if len(self.genus) != 2:
             raise ValidationError("Genus must be a tuple containing [genus_id, confidence_level].")
@@ -93,12 +94,12 @@ class SpecimenUpload(models.Model):
     def __str__(self):
         return f"SpecimenUpload #{self.id} by {self.user.email} on {self.upload_date}"
 
+
 class Image(models.Model):
     id = models.AutoField(primary_key=True)  # Explicit primary key
     specimen_upload = models.ForeignKey('port_inspector_app.SpecimenUpload', on_delete=models.CASCADE, related_name="images")
     image = models.ImageField(upload_to="uploads/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
-
 
     def delete(self, *args, **kwargs):
         print("DELETE IMAGE")
