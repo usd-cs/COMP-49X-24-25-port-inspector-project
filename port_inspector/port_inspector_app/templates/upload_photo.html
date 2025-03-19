@@ -94,14 +94,22 @@
     <div class="container">
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-
-            <h3>Upload Images</h3>
-            {{ formset.management_form }}
-            {% for form in formset %}
-                {{ form.image }}
-            {% endfor %}
-            <button type="submit" class="upload-btn">Upload Photos</button>
+        
+            <label for="id_frontal_image">Frontal Image:</label>
+            {{ form.frontal_upload }}
+            
+            <label for="id_dorsal_image">Dorsal Image:</label>
+            {{ form.dorsal_upload }}
+            
+            <label for="id_caudal_image">Caudal Image:</label>
+            {{ form.caudal_upload }}
+            
+            <label for="id_lateral_image">Lateral Image:</label>
+            {{ form.lateral_upload }}
+            
+            <button type="submit">Upload</button>
         </form>
+        {{ form.non_field_errors }}
     </div>
     <footer>
         &copy; 2024 Port Inspector App

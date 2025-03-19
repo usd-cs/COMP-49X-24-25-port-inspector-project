@@ -3,7 +3,7 @@ from django.template import loader
 from django.conf import settings
 from . import forms
 from port_inspector_app.models import Image, SpecimenUpload
-from .forms import UserRegisterForm, SpecimenUploadForm, ImageFormSet
+from .forms import UserRegisterForm, SpecimenUploadForm
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -120,79 +120,25 @@ def logout_view(request):
     logout(request)
     return redirect("/upload/")
 
-
-# Create your views here.
 def upload_image(request):
-    # if the user is attempting to POST, aka submitting the form
     if request.method == "POST":
-        # form filled with the request information
-        specimen_form = SpecimenUploadForm(request.POST)
+        specimen_form = SpecimenUploadForm(request.POST, request.FILES)
 
-
-        # if user is not yet logged in, prompt them to login
         if not request.user.is_authenticated:
             return redirect("/login/")
-        # otherwise, validate the form
+
         elif specimen_form.is_valid():
-            specimen = specimen_form.save(commit=False)
-            specimen.user = request.user  # Assign logged-in user
-            specimen.save()
+            specimen_form.save(user=request.user)
+            return redirect("/history/")  # Redirect to results page
 
-            image_formset = ImageFormSet(request.POST, request.FILES)
-
-            if image_formset.is_valid():
-                images = []
-
-                for form in image_formset:
-                    # if this particular form has an image included, save without commiting
-                    if form.cleaned_data.get('image'):
-                        image = form.save(commit=False)
-                        image.specimen_upload = specimen
-                        images.append(image)
-
-                if len(images) < 1 or len(images) > 4:
-                    specimen.delete() # if we don't have enough images, delete the temporary upload object
-                    return render(request, 'upload_photo.html', {
-                        'form': specimen_form,
-                        'formset': image_formset,
-                        'error_message': "You must upload between 1 and 4 images.",
-                    })
-
-                # If its good, save each image and associate it with the specimen
-                for image in images:
-                    image.save()
-
-            # Assign the images to their angles
-            if len(images) >= 1:
-                specimen.frontal_image = images[0]
-            if len(images) >= 2:
-                specimen.dorsal_image = images[1]
-            if len(images) >= 3:
-                specimen.caudal_image = images[2]
-            if len(images) >= 4:
-                specimen.lateral_image = images[3]
-
-            # Now save the specimen with images attached
-            specimen.save()
-            # potentially redirect to a new page here
-            
-    # else it is a GET request, meaning the user is requesting the page, in which we should give them an empty form
     else:
         specimen_form = SpecimenUploadForm()
-        image_formset = ImageFormSet()
 
-    return render(request, 'upload_photo.html', {'form': specimen_form, 'formset': image_formset})
+    return render(request, 'upload_photo.html', {'form': specimen_form})
 
 
 def view_history(request):
     if request.user.is_authenticated:
         # create empty set of type SpecimenUpload
-        uploads = SpecimenUpload.objects.none()
-        dates = []
-        # filter by user
-        for upload in SpecimenUpload.objects.filter(user=request.user):
-            # append relevant images to our set
-            uploads = uploads | Image.objects.filter(specimen_upload=upload)
-            dates.append(upload.upload_date)
-
-    return render(request, 'history.html', {'uploads': uploads, 'dates': dates, 'MEDIA_URL': settings.MEDIA_URL})
+        uploads = SpecimenUpload.objects.filter(user=request.user)
+    return render(request, 'history.html', {'uploads': uploads, 'MEDIA_URL': settings.MEDIA_URL})

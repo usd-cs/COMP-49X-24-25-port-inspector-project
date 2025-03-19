@@ -1,6 +1,8 @@
+import os
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.files.storage import default_storage
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
@@ -54,10 +56,10 @@ class SpecimenUpload(models.Model):
 
     upload_date = models.DateTimeField(auto_now_add=True)
 
-    frontal_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.SET_NULL, related_name="frontal_image", null=True, blank=True)
-    dorsal_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.SET_NULL, related_name="dorsal_image", null=True, blank=True)
-    caudal_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.SET_NULL, related_name="caudal_image", null=True, blank=True)
-    lateral_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.SET_NULL, related_name="lateral_image", null=True, blank=True)
+    frontal_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.CASCADE, related_name="frontal_image", null=True, blank=True)
+    dorsal_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.CASCADE, related_name="dorsal_image", null=True, blank=True)
+    caudal_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.CASCADE, related_name="caudal_image", null=True, blank=True)
+    lateral_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.CASCADE, related_name="lateral_image", null=True, blank=True)
 
     def clean(self):
         # Perform validation if we already have a pk and have been saved
@@ -75,6 +77,12 @@ class Image(models.Model):
     image = models.ImageField(upload_to="uploads/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    def delete(self, *args, **kwargs):
+        print("DELETE IMAGE")
+        # Delete the associated image file
+        if self.image and default_storage.exists(self.image.name):
+            default_storage.delete(self.image.name)
+        super().delete()
+
     def __str__(self):
         return f"Image #{self.id} for SpecimenUpload #{self.specimen_upload.id} uploaded at {self.uploaded_at}"
-
