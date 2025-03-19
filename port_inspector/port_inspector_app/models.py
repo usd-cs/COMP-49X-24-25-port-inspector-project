@@ -49,12 +49,23 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
+def default_genus():
+    return (None, 0.0)
+
+
+def default_species():
+    return [(None, 0.0)]
+
+
 class SpecimenUpload(models.Model):
     id = models.AutoField(primary_key=True)  # Explicit primary key
 
     user = models.ForeignKey('port_inspector_app.User', on_delete=models.CASCADE, related_name="uploads")
 
     upload_date = models.DateTimeField(auto_now_add=True)
+
+    genus = models.JSONField(default=default_genus)
+    species = models.JSONField(default=default_species)
 
     frontal_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.CASCADE, related_name="frontal_image", null=True, blank=True)
     dorsal_image = models.ForeignKey('port_inspector_app.Image', on_delete=models.CASCADE, related_name="dorsal_image", null=True, blank=True)
@@ -67,6 +78,17 @@ class SpecimenUpload(models.Model):
             num_images = self.images.count()
             if num_images < 1 or num_images > 4:
                 raise ValidationError(f"A SpecimenUpload must have between 1 and 4 images. Found {num_images}.")
+        
+        # Validate genus format
+        if len(self.genus) != 2:
+            raise ValidationError("Genus must be a tuple containing [genus_id, confidence_level].")
+
+        # Validate species format
+        if not isinstance(self.species, list) or not (1 <= len(self.species) <= 5):
+            raise ValidationError("Species must be a list of 1 to 5 [species_id, confidence_level] tuples.")
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"SpecimenUpload #{self.id} by {self.user.email} on {self.upload_date}"
@@ -77,6 +99,7 @@ class Image(models.Model):
     image = models.ImageField(upload_to="uploads/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+
     def delete(self, *args, **kwargs):
         print("DELETE IMAGE")
         # Delete the associated image file
@@ -86,3 +109,21 @@ class Image(models.Model):
 
     def __str__(self):
         return f"Image #{self.id} for SpecimenUpload #{self.specimen_upload.id} uploaded at {self.uploaded_at}"
+
+
+class KnownSpecies(models.Model):
+    id_num = models.AutoField(primary_key=True)
+    species_name = models.CharField(max_length=255, unique=True)
+    resource_link = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return self.species_name
+
+
+class Genus(models.Model):
+    id_num = models.AutoField(primary_key=True)
+    genus_name = models.CharField(max_length=255, unique=True)
+    resource_link = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return self.genus_name
