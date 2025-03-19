@@ -137,7 +137,7 @@ def view_history(request):
         uploads = SpecimenUpload.objects.filter(user=request.user)
         return render(request, 'history.html', {'uploads': uploads, 'MEDIA_URL': settings.MEDIA_URL})
     else:
-        return redirect("login/")
+        return redirect("/login/")
 
 
 def results_view(request):
