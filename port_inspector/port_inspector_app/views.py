@@ -12,7 +12,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from port_inspector_app.models import Image, SpecimenUpload, KnownSpecies, Genus
 
 from . import forms
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, SpecimenUploadForm
 from .tokens import account_activation_token
 
 User = get_user_model()
@@ -117,31 +117,27 @@ def logout_view(request):
 
 def upload_image(request):
     if request.method == "POST":
-        image_form = forms.ImageForm(request.POST, request.FILES)
+        specimen_form = SpecimenUploadForm(request.POST, request.FILES)
+
         if not request.user.is_authenticated:
             return redirect("/login/")
-        elif image_form.is_valid():
-            specimen_upload = SpecimenUpload()
-            specimen_upload.user = request.user
 
-            new_image = image_form.save(commit=False)
-            new_image.specimen_upload = specimen_upload
+        elif specimen_form.is_valid():
+            specimen_form.save(user=request.user)
+            return redirect("/history/")  # Redirect to results page
 
-            specimen_upload.save()
-            new_image.save()
     else:
-        image_form = forms.ImageForm()
-    return render(request, "upload_photo.html", {"form": image_form})
+        specimen_form = SpecimenUploadForm()
+
+    return render(request, 'upload_photo.html', {'form': specimen_form})
 
 
 def view_history(request):
-    images = Image.objects.none()
     if request.user.is_authenticated:
-        for upload in SpecimenUpload.objects.filter(user=request.user):
-            images = images | Image.objects.filter(specimen_upload=upload)
-    return render(
-        request, "history.html", {"images": images, "MEDIA_URL": settings.MEDIA_URL}
-    )
+        uploads = SpecimenUpload.objects.filter(user=request.user)
+        return render(request, 'history.html', {'uploads': uploads, 'MEDIA_URL': settings.MEDIA_URL})
+    else:
+        return redirect("/login/")
 
 
 def results_view(request):

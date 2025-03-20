@@ -80,41 +80,40 @@
    </style>
 </head>
 <body>
-   <header>
-       <a href="/" class="icon">🏠<span>Home</span></a>
-       <a href="/history" class="icon">📜<span>History</span></a>
-       <a href="/upload" class="icon">📤<span>Upload Photo</span></a>
-       <a href="/logout" class="icon">👤<span>Profile</span></a>
-   </header>
-  
-   <div class="container">
-       <h1>Upload Specimen Photos</h1>
-       <form method="POST" enctype="multipart/form-data">
-           {% csrf_token %}
-          
-           <div class="file-input">
-               <label for="caudal">Caudal:</label>
-               <input type="file" name="caudal" accept="image/*" required>
-           </div>
-           <div class="file-input">
-               <label for="frontal">Frontal:</label>
-               <input type="file" name="frontal" accept="image/*" required>
-           </div>
-           <div class="file-input">
-               <label for="dorsal">Dorsal:</label>
-               <input type="file" name="dorsal" accept="image/*" required>
-           </div>
-           <div class="file-input">
-               <label for="lateral">Lateral:</label>
-               <input type="file" name="lateral" accept="image/*" required>
-           </div>
-
-
-           <button type="submit" class="upload-btn">Upload Specimen</button>
-       </form>
-   </div>
-   <footer>
-       &copy; 2024 Port Inspector App
-   </footer>
+    <header>
+        <a href="/" class="icon">🏠<span>Home</span></a>
+        <a href="/history" class="icon">📜<span>History</span></a>
+        <a href="/upload" class="icon">📤<span>Upload Photo</span></a>
+        <a href="/logout" class="icon">👤<span>Profile</span></a>
+        {% if not request.user.is_authenticated %}
+        <a href="/login" class="icon">🔒<span>Login</span></a>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        <a href="/logout" class="icon">🔓<span>Logout</span></a>
+        {% endif %}
+    </header>
+    <div class="container">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+        
+            <label for="id_frontal_image">Frontal Image:</label>
+            {{ form.frontal_upload }}
+            
+            <label for="id_dorsal_image">Dorsal Image:</label>
+            {{ form.dorsal_upload }}
+            
+            <label for="id_caudal_image">Caudal Image:</label>
+            {{ form.caudal_upload }}
+            
+            <label for="id_lateral_image">Lateral Image:</label>
+            {{ form.lateral_upload }}
+            
+            <button type="submit">Upload</button>
+        </form>
+        {{ form.non_field_errors }}
+    </div>
+    <footer>
+        &copy; 2024 Port Inspector App
+    </footer>
 </body>
 </html>
