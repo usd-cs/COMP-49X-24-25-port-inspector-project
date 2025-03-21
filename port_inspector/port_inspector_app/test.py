@@ -1,15 +1,9 @@
-from django.test import TestCase, RequestFactory
-from unittest.mock import patch, MagicMock
-from django.urls import reverse
-from django.http import HttpRequest
-from django.core.mail import outbox
-from django.test import TestCase, RequestFactory
+from django.test import TestCase
 from unittest.mock import patch, MagicMock
 from django.urls import reverse
 from django.http import HttpRequest
 from django.core.mail import outbox
 from django.core.exceptions import ValidationError
-from django.core.files.uploadedfile import SimpleUploadedFile
 from port_inspector_app.views import results_view
 from port_inspector_app.models import SpecimenUpload, Genus, KnownSpecies, User, Image
 

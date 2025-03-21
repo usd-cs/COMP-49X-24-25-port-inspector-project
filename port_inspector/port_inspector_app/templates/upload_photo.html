@@ -1,83 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Upload Specimen</title>
-   <style>
-       body {
-           font-family: Arial, sans-serif;
-           background-color: #f9f9fc;
-           margin: 0;
-           padding: 0;
-           display: flex;
-           flex-direction: column;
-           align-items: center;
-           justify-content: flex-start;
-           height: 100vh;
-       }
-       header {
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-           width: 100%;
-           padding: 10px 20px;
-           box-sizing: border-box;
-           background-color: #ffffff;
-           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-       }
-       header a {
-           text-decoration: none;
-           color: #333;
-           font-size: 16px;
-           display: flex;
-           align-items: center;
-           margin: 0 10px;
-       }
-       .container {
-           background-color: white;
-           padding: 20px;
-           border-radius: 10px;
-           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-           text-align: center;
-           width: 400px;
-           margin-top: 50px;
-       }
-       h1 {
-           font-size: 18px;
-           color: #555;
-           margin-bottom: 20px;
-       }
-       form {
-           display: flex;
-           flex-direction: column;
-           align-items: center;
-       }
-       .file-input {
-           margin-bottom: 15px;
-           display: flex;
-           flex-direction: column;
-           align-items: center;
-       }
-       .upload-btn {
-           background-color: #1a73e8;
-           color: white;
-           border: none;
-           border-radius: 5px;
-           padding: 10px 20px;
-           cursor: pointer;
-           font-size: 14px;
-           margin-top: 10px;
-       }
-       .upload-btn:hover {
-           background-color: #155cb0;
-       }
-       footer {
-           margin-top: 20px;
-           font-size: 12px;
-           color: #aaa;
-       }
-   </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload an Image</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9fc;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        header a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+        }
+        header a span {
+            margin-left: 5px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+            margin-top: 50px;
+        }
+        h1 {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .upload-btn {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .upload-btn:hover {
+            background-color: #155cb0;
+        }
+        input[type="file"] {
+            margin-bottom: 15px;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #aaa;
+        }
+    </style>
 </head>
 <body>
     <header>

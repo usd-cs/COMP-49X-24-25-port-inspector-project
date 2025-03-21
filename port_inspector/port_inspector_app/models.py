@@ -6,6 +6,7 @@ from django.core.files.storage import default_storage
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -90,13 +91,14 @@ class SpecimenUpload(models.Model):
     def __str__(self):
         return f"SpecimenUpload #{self.id} by {self.user.email} on {self.upload_date}"
 
+
 class Image(models.Model):
     id = models.AutoField(primary_key=True)  # Explicit primary key
     specimen_upload = models.ForeignKey('port_inspector_app.SpecimenUpload', on_delete=models.CASCADE, related_name="images")
     image = models.ImageField(upload_to="uploads/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
-    #TODO: fix, make sure our image files get deleted w/SpecimenUpload
+    # TODO: fix, make sure our image files get deleted w/SpecimenUpload
     def delete(self, *args, **kwargs):
         print("DELETE IMAGE")
         # Delete the associated image file
@@ -106,7 +108,7 @@ class Image(models.Model):
 
     def __str__(self):
         return f"Image #{self.id} for SpecimenUpload #{self.specimen_upload.id} uploaded at {self.uploaded_at}"
-  
+
 
 class KnownSpecies(models.Model):
     id_num = models.AutoField(primary_key=True)
