@@ -4,19 +4,24 @@ from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, send_mail
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from port_inspector_app.models import Image, SpecimenUpload, KnownSpecies, Genus
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
+from port_inspector_app.models import Image, SpecimenUpload, KnownSpecies, Genus
 from . import forms
 from .forms import UserRegisterForm, SpecimenUploadForm
 from .tokens import account_activation_token
 
 User = get_user_model()
 
+
+# Handle email verification
 
 def verify_email(request):
     if request.method == "POST":
@@ -69,9 +74,10 @@ def verify_email_complete(request):
     return render(request, "verify-email-complete.html")
 
 
+# Sign-up new user
+
 def signup_view(request):
     if request.method == "POST":
-        print("signup POST request received\n")
         next_page = request.GET.get("next")
         form = UserRegisterForm(request.POST)
         if form.is_valid():
@@ -83,19 +89,16 @@ def signup_view(request):
             if new_user:
                 login(request, new_user)
                 return redirect("verify-email")
-            else:
-                print("Authentication failed")
             if next_page:
                 return redirect(next_page)
             else:
                 return redirect("verify-email")
-        else:
-            print("ERROR: Email already in use or passwords do not match\n")
     else:
         form = UserRegisterForm()
-    context = {"form": form}
-    return render(request, "signup.html", context)
+    return render(request, "signup.html", {"form": form})
 
+
+# Login view
 
 def login_view(request):
     if request.method == "POST":
@@ -110,10 +113,14 @@ def login_view(request):
     return render(request, "login.html", {"form": form})
 
 
+# Logout view
+
 def logout_view(request):
     logout(request)
     return redirect("/upload/")
 
+
+# Upload view (submit specimen)
 
 def upload_image(request):
     if request.method == "POST":
@@ -124,13 +131,15 @@ def upload_image(request):
 
         elif specimen_form.is_valid():
             specimen_form.save(user=request.user)
-            return redirect("/history/")  # Redirect to results page
+            return redirect("/history/")
 
     else:
         specimen_form = SpecimenUploadForm()
 
     return render(request, 'upload_photo.html', {'form': specimen_form})
 
+
+# History view
 
 def view_history(request):
     if request.user.is_authenticated:
@@ -140,9 +149,14 @@ def view_history(request):
         return redirect("/login/")
 
 
+# Results page (mock data from BeetleID team for now)
+
 def results_view(request):
     # This data comes from the BeetleID team
-    species_results = [("species1", 95.5), ("species2", 23.9), ("species3", 15.7), ("species4", 12.3), ("species5", 5.5)]
+    species_results = [
+        ("species1", 95.5), ("species2", 23.9), ("species3", 15.7),
+        ("species4", 12.3), ("species5", 5.5)
+    ]
     genus_result = ("genus1", 92.4)
 
     # Fetch species URLs from the database
@@ -160,7 +174,7 @@ def results_view(request):
         {
             "species_name": species[0],
             "confidence_level": species[1],
-            "resource_link": species_dict.get(species[0], "#"),  # Default to "#" if not found
+            "resource_link": species_dict.get(species[0], "#"),
         }
         for species in species_results
     ]
@@ -187,12 +201,46 @@ def results_view(request):
         "/static/images/sample4.jpg",
     ]
 
+    # All known species for dropdown
+    all_species = KnownSpecies.objects.all()
+
     return render(
         request,
         "results.html",
         {
-            "species_results": formatted_species_results[:6],  # Ensure only 5 species + 1 genus are displayed
+            "species_results": formatted_species_results[:6],
             "likely_species": likely_species,
             "image_urls": image_urls,
+            "known_species": all_species,
         },
     )
+
+
+# Confirm button AJAX view
+
+@require_POST
+@csrf_exempt
+def confirm_species(request):
+    species_name = request.POST.get("confirmed_species")
+    if species_name:
+        print(f"Confirmed species: {species_name}")
+        return JsonResponse({"message": f"Species '{species_name}' confirmed!"}, status=200)
+    return JsonResponse({"error": "No species provided."}, status=400)
+
+
+# Notify Dr. Morse for unknown species
+
+@require_POST
+@csrf_exempt
+def notify_unknown(request):
+    try:
+        send_mail(
+            subject="Unknown Species Notification",
+            message="A user has reported an unknown species in the system.",
+            from_email="noreply@portinspector.com",
+            recipient_list=["dr.morse@example.com"],
+            fail_silently=False,
+        )
+        return JsonResponse({"message": "Notification sent to Dr. Morse."}, status=200)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
