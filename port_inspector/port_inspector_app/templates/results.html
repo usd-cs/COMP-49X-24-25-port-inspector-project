@@ -88,17 +88,26 @@
            color: red;
            font-weight: bold;
        }
+       .confirm-form {
+           margin-top: 20px;
+       }
        .confirm-btn {
            background-color: blue;
            color: white;
            font-size: 16px;
            border: none;
-           padding: 15px 20px;
+           padding: 10px 20px;
            cursor: pointer;
-           margin-top: 20px;
+           margin-left: 10px;
        }
-       .confirm-btn:hover {
-           background-color: darkblue;
+       .unknown-btn {
+           background-color: crimson;
+           color: white;
+           font-size: 16px;
+           border: none;
+           padding: 10px 20px;
+           cursor: pointer;
+           margin-top: 10px;
        }
    </style>
 </head>
@@ -128,46 +137,48 @@
                    <th>Identification Resources</th>
                </tr>
 
-               <!-- Genus row -->
                {% if species_results %}
                    <tr>
                        <td><strong>Genus:</strong> {{ species_results.0.species_name }}</td>
                        <td class="
-                           {% if species_results.0.confidence_level >= 50 %}
-                               confidence-high
-                           {% elif species_results.0.confidence_level >= 20 %}
-                               confidence-medium
-                           {% else %}
-                               confidence-low
-                           {% endif %}
-                       ">
+                           {% if species_results.0.confidence_level >= 50 %}confidence-high
+                           {% elif species_results.0.confidence_level >= 20 %}confidence-medium
+                           {% else %}confidence-low{% endif %}">
                            {{ species_results.0.confidence_level }}%
                        </td>
                        <td><a href="{{ species_results.0.resource_link }}" target="_blank">more here</a></td>
                    </tr>
                {% endif %}
 
-               <!-- Species rows -->
                {% for species in species_results|slice:"1:6" %}
                <tr>
                    <td><strong>Species {{ forloop.counter }}:</strong> {{ species.species_name }}</td>
                    <td class="
-                       {% if species.confidence_level >= 50 %}
-                           confidence-high
-                       {% elif species.confidence_level >= 20 %}
-                           confidence-medium
-                       {% else %}
-                           confidence-low
-                       {% endif %}
-                   ">
+                       {% if species.confidence_level >= 50 %}confidence-high
+                       {% elif species.confidence_level >= 20 %}confidence-medium
+                       {% else %}confidence-low{% endif %}">
                        {{ species.confidence_level }}%
                    </td>
                    <td><a href="{{ species.resource_link }}" target="_blank">more here</a></td>
                </tr>
                {% endfor %}
            </table>
-           
-           <button class="confirm-btn">Confirm Identification</button>
+
+           <form class="confirm-form" action="/confirm_species/" method="POST">
+               {% csrf_token %}
+               <label for="species-select"><strong>Confirm Identification:</strong></label>
+               <select name="confirmed_species" id="species-select">
+                   {% for species in species_results %}
+                       <option value="{{ species.species_name }}">{{ species.species_name }}</option>
+                   {% endfor %}
+               </select>
+               <button type="submit" class="confirm-btn">Confirm</button>
+           </form>
+
+           <form class="unknown-form" action="/notify_unknown/" method="POST">
+               {% csrf_token %}
+               <button type="submit" class="unknown-btn">Unknown Species - Notify Dr. Morse</button>
+           </form>
        </div>
    </div>
 </body>
