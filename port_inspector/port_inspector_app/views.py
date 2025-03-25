@@ -1,22 +1,21 @@
 from django.conf import settings
-from port_inspector_app.models import Image, SpecimenUpload, KnownSpecies, Genus
-from .forms import UserRegisterForm, SpecimenUploadForm
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.core.signing import Signer, BadSignature
+from port_inspector_app.models import Image, SpecimenUpload, KnownSpecies, Genus
+
 from . import forms
+from .forms import UserRegisterForm, SpecimenUploadForm
 from .tokens import account_activation_token
 
 User = get_user_model()
-signer = Signer()
 
 
 def verify_email(request):
@@ -103,8 +102,7 @@ def login_view(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return redirect("/upload/")  # after the user logs in, send them to the homepage
-    # if user is already logged in, redirect
+            return redirect("/upload/")
     elif request.user.is_authenticated:
         return redirect("/upload/")
     else:
@@ -112,7 +110,6 @@ def login_view(request):
     return render(request, "login.html", {"form": form})
 
 
-# log the user out and send them back to the upload page
 def logout_view(request):
     logout(request)
     return redirect("/upload/")
@@ -126,9 +123,8 @@ def upload_image(request):
             return redirect("/login/")
 
         elif specimen_form.is_valid():
-            specimen = specimen_form.save(user=request.user)
-            hashed_ID = signer.sign(specimen.id)
-            return redirect("results", hashed_ID=hashed_ID)  # go to a UNIQUE URL for the results
+            specimen_form.save(user=request.user)
+            return redirect("/history/")  # Redirect to results page
 
     else:
         specimen_form = SpecimenUploadForm()
@@ -138,24 +134,13 @@ def upload_image(request):
 
 def view_history(request):
     if request.user.is_authenticated:
-        # create empty set of type SpecimenUpload
         uploads = SpecimenUpload.objects.filter(user=request.user)
         return render(request, 'history.html', {'uploads': uploads, 'MEDIA_URL': settings.MEDIA_URL})
     else:
         return redirect("/login/")
 
 
-def results_view(request, hashed_ID):
-    """ uncomment when you want to access the specimen upload (for flake sake)
-    # get specimen ID from URL hash
-    try:
-        specimen_ID = signer.unsign(hashed_ID)
-    except BadSignature:
-        return render(request, "error.html", {"message": "Invalid results link"})
-
-    # get specimen object we are accessing
-    specimen = get_object_or_404(SpecimenUpload, id=specimen_ID)"""
-
+def results_view(request):
     # This data comes from the BeetleID team
     species_results = [("species1", 95.5), ("species2", 23.9), ("species3", 15.7), ("species4", 12.3), ("species5", 5.5)]
     genus_result = ("genus1", 92.4)
