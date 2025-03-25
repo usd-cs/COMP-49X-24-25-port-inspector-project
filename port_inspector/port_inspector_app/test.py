@@ -184,7 +184,7 @@ class ResultsViewTests(TestCase):
         request.method = 'GET'
 
         # Call the view function
-        response = results_view(request)
+        response = results_view(request, hashed_ID="mocked123")
 
         # Check that the response status code is 200
         self.assertEqual(response.status_code, 200)
@@ -209,7 +209,7 @@ class ResultsViewTests(TestCase):
         request.method = 'GET'
 
         # Call the view function
-        response = results_view(request)
+        response = results_view(request, hashed_ID="mocked123")
 
         # Check that the response status code is 200
         self.assertEqual(response.status_code, 200)
