@@ -1,21 +1,17 @@
+from django.shortcuts import render, redirect
 from django.conf import settings
+from port_inspector_app.models import Image, SpecimenUpload, User, KnownSpecies, Genus
+from .forms import UserRegisterForm, SpecimenUploadForm
 from django.contrib import messages
-from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
-from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from port_inspector_app.models import Image, SpecimenUpload, KnownSpecies, Genus
-
-from . import forms
-from .forms import UserRegisterForm, SpecimenUploadForm
 from .tokens import account_activation_token
-
-User = get_user_model()
 
 
 def verify_email(request):
@@ -102,7 +98,8 @@ def login_view(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return redirect("/upload/")
+            return redirect("/upload/")  # after the user logs in, send them to the homepage
+    # if user is already logged in, redirect
     elif request.user.is_authenticated:
         return redirect("/upload/")
     else:
@@ -110,6 +107,7 @@ def login_view(request):
     return render(request, "login.html", {"form": form})
 
 
+# log the user out and send them back to the upload page
 def logout_view(request):
     logout(request)
     return redirect("/upload/")
@@ -134,6 +132,7 @@ def upload_image(request):
 
 def view_history(request):
     if request.user.is_authenticated:
+        # create empty set of type SpecimenUpload
         uploads = SpecimenUpload.objects.filter(user=request.user)
         return render(request, 'history.html', {'uploads': uploads, 'MEDIA_URL': settings.MEDIA_URL})
     else:
