@@ -1,185 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Upload Results</title>
-   <style>
-       body {
-           font-family: Arial, sans-serif;
-           background-color: #f9f9fc;
-           margin: 0;
-           padding: 0;
-           display: flex;
-           flex-direction: column;
-           align-items: center;
-           justify-content: flex-start;
-           height: 100vh;
-       }
-       header {
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-           width: 100%;
-           padding: 10px 20px;
-           box-sizing: border-box;
-           background-color: #ffffff;
-           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-       }
-       header a {
-           text-decoration: none;
-           color: #333;
-           font-size: 16px;
-           display: flex;
-           align-items: center;
-           margin: 0 10px;
-       }
-       .container {
-           display: flex;
-           flex-direction: row;
-           align-items: flex-start;
-           margin-top: 30px;
-           width: 80%;
-       }
-       .image-section {
-           width: 40%;
-           display: flex;
-           flex-wrap: wrap;
-           justify-content: center;
-           border: 2px solid purple;
-           padding: 10px;
-           margin-right: 20px;
-       }
-       .image-section img {
-           width: 100px;
-           height: 100px;
-           margin: 5px;
-           border: 1px solid #ccc;
-           object-fit: cover;
-       }
-       .results-section {
-           width: 60%;
-       }
-       h1 {
-           font-size: 22px;
-       }
-       table {
-           width: 100%;
-           border-collapse: collapse;
-           margin-top: 20px;
-       }
-       th, td {
-           border: 1px solid #ddd;
-           padding: 10px;
-           text-align: left;
-       }
-       th {
-           background-color: #f2f2f2;
-       }
-       .confidence-high {
-           color: green;
-           font-weight: bold;
-       }
-       .confidence-medium {
-           color: orange;
-           font-weight: bold;
-       }
-       .confidence-low {
-           color: red;
-           font-weight: bold;
-       }
-       .confirm-form {
-           margin-top: 20px;
-       }
-       .confirm-btn {
-           background-color: blue;
-           color: white;
-           font-size: 16px;
-           border: none;
-           padding: 10px 20px;
-           cursor: pointer;
-           margin-left: 10px;
-       }
-       .unknown-btn {
-           background-color: crimson;
-           color: white;
-           font-size: 16px;
-           border: none;
-           padding: 10px 20px;
-           cursor: pointer;
-           margin-top: 10px;
-       }
-   </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Results</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9fc;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 10px 20px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    header a {
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      margin: 0 10px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      margin-top: 30px;
+      width: 80%;
+    }
+
+    .image-section {
+      width: 40%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      border: 2px solid purple;
+      padding: 10px;
+      margin-right: 20px;
+    }
+
+    .image-section img {
+      width: 100px;
+      height: 100px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      object-fit: cover;
+    }
+
+    .results-section {
+      width: 60%;
+    }
+
+    h1 {
+      font-size: 22px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .confidence-high {
+      color: green;
+      font-weight: bold;
+    }
+
+    .confidence-medium {
+      color: orange;
+      font-weight: bold;
+    }
+
+    .confidence-low {
+      color: red;
+      font-weight: bold;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top: 30px;
+      gap: 15px;
+    }
+
+    .confirm-form,
+    .unknown-form {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .confirm-form select {
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    .confirm-btn,
+    .unknown-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .confirm-btn {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .confirm-btn:hover {
+      background-color: #0056b3;
+    }
+
+    .unknown-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .unknown-btn:hover {
+      background-color: #a71d2a;
+    }
+  </style>
 </head>
 <body>
-   <header>
-       <a href="/" class="icon">🏠<span>Home</span></a>
-       <a href="/history" class="icon">📜<span>History</span></a>
-       <a href="/upload" class="icon">📤<span>Upload Photo</span></a>
-       <a href="/logout" class="icon">👤<span>Profile</span></a>
-   </header>
+  <header>
+    <a href="/">🏠 Home</a>
+    <a href="/history">📜 History</a>
+    <a href="/upload">📤 Upload Photo</a>
+    <a href="/logout">👤 Profile</a>
+  </header>
 
-   <div class="container">
-       <div class="image-section">
-           {% for image in image_urls %}
-               <img src="{{ image }}" alt="Uploaded Image">
-           {% endfor %}
-       </div>
+  <div class="container">
+    <div class="image-section">
+      {% for image in image_urls %}
+        <img src="{{ image }}" alt="Uploaded Image">
+      {% endfor %}
+    </div>
 
-       <div class="results-section">
-           <h1>Upload #23456</h1>
-           <p><strong>Likely Species:</strong> <span id="likely-species">{{ likely_species }}</span></p>
-           
-           <table>
-               <tr>
-                   <th>Genus/Species Name</th>
-                   <th>Confidence</th>
-                   <th>Identification Resources</th>
-               </tr>
+    <div class="results-section">
+      <h1>Upload #23456</h1>
+      <p><strong>Likely Species:</strong> <span id="likely-species">{{ likely_species }}</span></p>
 
-               {% if species_results %}
-                   <tr>
-                       <td><strong>Genus:</strong> {{ species_results.0.species_name }}</td>
-                       <td class="
-                           {% if species_results.0.confidence_level >= 50 %}confidence-high
-                           {% elif species_results.0.confidence_level >= 20 %}confidence-medium
-                           {% else %}confidence-low{% endif %}">
-                           {{ species_results.0.confidence_level }}%
-                       </td>
-                       <td><a href="{{ species_results.0.resource_link }}" target="_blank">more here</a></td>
-                   </tr>
-               {% endif %}
+      <table>
+        <tr>
+          <th>Genus/Species Name</th>
+          <th>Confidence</th>
+          <th>Identification Resources</th>
+        </tr>
 
-               {% for species in species_results|slice:"1:6" %}
-               <tr>
-                   <td><strong>Species {{ forloop.counter }}:</strong> {{ species.species_name }}</td>
-                   <td class="
-                       {% if species.confidence_level >= 50 %}confidence-high
-                       {% elif species.confidence_level >= 20 %}confidence-medium
-                       {% else %}confidence-low{% endif %}">
-                       {{ species.confidence_level }}%
-                   </td>
-                   <td><a href="{{ species.resource_link }}" target="_blank">more here</a></td>
-               </tr>
-               {% endfor %}
-           </table>
+        {% if species_results %}
+          <tr>
+            <td><strong>Genus:</strong> {{ species_results.0.species_name }}</td>
+            <td class="{% if species_results.0.confidence_level >= 50 %}confidence-high{% elif species_results.0.confidence_level >= 20 %}confidence-medium{% else %}confidence-low{% endif %}">
+              {{ species_results.0.confidence_level }}%
+            </td>
+            <td><a href="{{ species_results.0.resource_link }}" target="_blank">more here</a></td>
+          </tr>
+        {% endif %}
 
-           <form class="confirm-form" action="/confirm_species/" method="POST">
-               {% csrf_token %}
-               <label for="species-select"><strong>Confirm Identification:</strong></label>
-               <select name="confirmed_species" id="species-select">
-                   {% for species in species_results %}
-                       <option value="{{ species.species_name }}">{{ species.species_name }}</option>
-                   {% endfor %}
-               </select>
-               <button type="submit" class="confirm-btn">Confirm</button>
-           </form>
+        {% for species in species_results|slice:"1:6" %}
+        <tr>
+          <td><strong>Species {{ forloop.counter }}:</strong> {{ species.species_name }}</td>
+          <td class="{% if species.confidence_level >= 50 %}confidence-high{% elif species.confidence_level >= 20 %}confidence-medium{% else %}confidence-low{% endif %}">
+            {{ species.confidence_level }}%
+          </td>
+          <td><a href="{{ species.resource_link }}" target="_blank">more here</a></td>
+        </tr>
+        {% endfor %}
+      </table>
 
-           <form class="unknown-form" action="/notify_unknown/" method="POST">
-               {% csrf_token %}
-               <button type="submit" class="unknown-btn">Unknown Species - Notify Dr. Morse</button>
-           </form>
-       </div>
-   </div>
+      <div class="action-buttons">
+        <form class="confirm-form" action="/confirm_species/" method="POST">
+          {% csrf_token %}
+          <label for="species-select"><strong>Confirm Identification:</strong></label>
+          <select name="confirmed_species" id="species-select">
+            {% for species in species_results %}
+              <option value="{{ species.species_name }}">{{ species.species_name }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="confirm-btn">Confirm</button>
+        </form>
+
+        <form class="unknown-form" action="/notify_unknown/" method="POST">
+          {% csrf_token %}
+          <button type="submit" class="unknown-btn">Unknown Species - Notify Dr. Morse</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
