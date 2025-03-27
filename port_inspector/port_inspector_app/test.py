@@ -186,7 +186,6 @@ class ResultsViewTests(TestCase):
         hashed_ID = "mocked_hash_value"  # Fake hash
         response = results_view(request, hashed_ID)
 
-
         # Check that the response status code is 200
         self.assertEqual(response.status_code, 200)
 
@@ -212,7 +211,6 @@ class ResultsViewTests(TestCase):
         # Call the view function
         hashed_ID = "mocked_hash_value"  # Fake hash
         response = results_view(request, hashed_ID)
-
 
         # Check that the response status code is 200
         self.assertEqual(response.status_code, 200)
