@@ -1,3 +1,5 @@
+import hashlib
+import hmac
 from django.shortcuts import render, redirect
 from django.conf import settings
 from port_inspector_app.models import Image, SpecimenUpload, User, KnownSpecies, Genus
@@ -13,8 +15,6 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from .tokens import account_activation_token
-
-signer = Signer()
 
 
 def verify_email(request):
@@ -117,6 +117,7 @@ def logout_view(request):
 
 
 def upload_image(request):
+    SALT_KEY = "callosobruchus!maculatus"
     if request.method == "POST":
         specimen_form = SpecimenUploadForm(request.POST, request.FILES)
 
@@ -125,7 +126,7 @@ def upload_image(request):
 
         elif specimen_form.is_valid():
             specimen = specimen_form.save(user=request.user)
-            hashed_ID = signer.sign(specimen.id)
+            hashed_ID = hmac.new(SALT_KEY.encode(), f"{specimen.id}".encode(), hashlib.sha256).hexdigest()
             return redirect("results", hashed_ID=hashed_ID)  # go to a UNIQUE URL for the results
 
     else:
@@ -144,16 +145,6 @@ def view_history(request):
 
 
 def results_view(request, hashed_ID):
-    """ uncomment when you want to access the specimen upload (for flake sake)
-    # get specimen ID from URL hash
-    try:
-        specimen_ID = signer.unsign(hashed_ID)
-    except BadSignature:
-        return render(request, "error.html", {"message": "Invalid results link"})
-
-    # get specimen object we are accessing
-    specimen = get_object_or_404(SpecimenUpload, id=specimen_ID)"""
-
     # This data comes from the BeetleID team
     species_results = [("species1", 95.5), ("species2", 23.9), ("species3", 15.7), ("species4", 12.3), ("species5", 5.5)]
     genus_result = ("genus1", 92.4)
