@@ -152,12 +152,12 @@
             <tbody>
                 {% for upload in uploads %}
                 <tr>
-                    <td>{{ upload.id }}</td>
+                    <td><a href="{% url 'results' upload.1 %}" target="_blank">{{ upload.0.id }}</a></td>
                     <td>{{ upload.upload_date.date|default:"No date" }}</td>
                     <td>{{ upload.upload_date.time|default:"No time" }}</td>
                     <td>
                         {% if upload.frontal_image and upload.frontal_image.image %}
-                            <a class="view-link" onclick="openModal('{{ MEDIA_URL }}{{ upload.frontal_image.image }}')">Frontal</a>
+                            <a class="view-link" onclick="openModal('{{ MEDIA_URL }}{{ upload.0.frontal_image.image }}')">Frontal</a>
                         {% else %}
                             No image
                         {% endif %}
@@ -165,7 +165,7 @@
                 
                     <td>
                         {% if upload.dorsal_image and upload.dorsal_image.image %}
-                            <a class="view-link" onclick="openModal('{{ MEDIA_URL }}{{ upload.dorsal_image.image }}')">Dorsal</a>
+                            <a class="view-link" onclick="openModal('{{ MEDIA_URL }}{{ upload.0.dorsal_image.image }}')">Dorsal</a>
                         {% else %}
                             No image
                         {% endif %}
@@ -173,7 +173,7 @@
                 
                     <td>
                         {% if upload.caudal_image and upload.caudal_image.image %}
-                            <a class="view-link" onclick="openModal('{{ MEDIA_URL }}{{ upload.caudal_image.image }}')">Caudal</a>
+                            <a class="view-link" onclick="openModal('{{ MEDIA_URL }}{{ upload.0.caudal_image.image }}')">Caudal</a>
                         {% else %}
                             No image
                         {% endif %}
@@ -181,7 +181,7 @@
                 
                     <td>
                         {% if upload.lateral_image and upload.lateral_image.image %}
-                            <a class="view-link" onclick="openModal('{{ MEDIA_URL }}{{ upload.lateral_image.image }}')">Lateral</a>
+                            <a class="view-link" onclick="openModal('{{ MEDIA_URL }}{{ upload.0.lateral_image.image }}')">Lateral</a>
                         {% else %}
                             No image
                         {% endif %}

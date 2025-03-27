@@ -16,6 +16,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from .tokens import account_activation_token
 
+SALT_KEY = "callosobruchus!maculatus"
 
 def verify_email(request):
     if request.method == "POST":
@@ -117,7 +118,6 @@ def logout_view(request):
 
 
 def upload_image(request):
-    SALT_KEY = "callosobruchus!maculatus"
     if request.method == "POST":
         specimen_form = SpecimenUploadForm(request.POST, request.FILES)
 
@@ -138,7 +138,11 @@ def upload_image(request):
 def view_history(request):
     if request.user.is_authenticated:
         # create empty set of type SpecimenUpload
-        uploads = SpecimenUpload.objects.filter(user=request.user)
+        specimen = SpecimenUpload.objects.filter(user=request.user)
+        uploads = []
+        for upload in specimen:
+            hashed_ID = hmac.new(SALT_KEY.encode(), f"{upload.id}".encode(), hashlib.sha256).hexdigest()
+            uploads.append((upload, hashed_ID))
         return render(request, 'history.html', {'uploads': uploads, 'MEDIA_URL': settings.MEDIA_URL})
     else:
         return redirect("/login/")
