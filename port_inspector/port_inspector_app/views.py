@@ -1,6 +1,9 @@
+import hashlib
+import hmac
 from django.shortcuts import render, redirect
 from django.conf import settings
 from port_inspector_app.models import Image, SpecimenUpload, User, KnownSpecies, Genus
+from django.core.signing import Signer, BadSignature
 from .forms import UserRegisterForm, SpecimenUploadForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -114,6 +117,7 @@ def logout_view(request):
 
 
 def upload_image(request):
+    SALT_KEY = "callosobruchus!maculatus"
     if request.method == "POST":
         specimen_form = SpecimenUploadForm(request.POST, request.FILES)
 
@@ -121,8 +125,9 @@ def upload_image(request):
             return redirect("/login/")
 
         elif specimen_form.is_valid():
-            specimen_form.save(user=request.user)
-            return redirect("/history/")  # Redirect to results page
+            specimen = specimen_form.save(user=request.user)
+            hashed_ID = hmac.new(SALT_KEY.encode(), f"{specimen.id}".encode(), hashlib.sha256).hexdigest()
+            return redirect("results", hashed_ID=hashed_ID)  # go to a UNIQUE URL for the results
 
     else:
         specimen_form = SpecimenUploadForm()
@@ -139,7 +144,7 @@ def view_history(request):
         return redirect("/login/")
 
 
-def results_view(request):
+def results_view(request, hashed_ID):
     # This data comes from the BeetleID team
     species_results = [("species1", 95.5), ("species2", 23.9), ("species3", 15.7), ("species4", 12.3), ("species5", 5.5)]
     genus_result = ("genus1", 92.4)
