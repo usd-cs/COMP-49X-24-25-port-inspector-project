@@ -2,10 +2,10 @@ from django.test import TestCase
 from unittest.mock import patch, MagicMock
 from django.urls import reverse
 from django.http import HttpRequest
-from django.core.mail import outbox
 from django.core.exceptions import ValidationError
 from port_inspector_app.views import results_view
 from port_inspector_app.models import SpecimenUpload, Genus, KnownSpecies, User, Image
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 
 class UserEmailIntegrationTests(TestCase):
@@ -183,7 +183,8 @@ class ResultsViewTests(TestCase):
         request.method = 'GET'
 
         # Call the view function
-        response = results_view(request)
+        hashed_ID = "mocked_hash_value"  # Fake hash
+        response = results_view(request, hashed_ID)
 
         # Check that the response status code is 200
         self.assertEqual(response.status_code, 200)
@@ -208,7 +209,8 @@ class ResultsViewTests(TestCase):
         request.method = 'GET'
 
         # Call the view function
-        response = results_view(request)
+        hashed_ID = "mocked_hash_value"  # Fake hash
+        response = results_view(request, hashed_ID)
 
         # Check that the response status code is 200
         self.assertEqual(response.status_code, 200)
