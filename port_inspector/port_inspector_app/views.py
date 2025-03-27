@@ -18,6 +18,7 @@ from .tokens import account_activation_token
 
 SALT_KEY = "callosobruchus!maculatus"
 
+
 def verify_email(request):
     if request.method == "POST":
         if not request.user.is_email_verified:
