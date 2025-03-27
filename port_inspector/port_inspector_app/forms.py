@@ -86,3 +86,15 @@ class SpecimenUploadForm(forms.ModelForm):
             specimen.save()  # Save again for the FK fields
 
         return specimen
+
+class ConfirmIdForm(forms.ModelForm):
+    choice = forms.CharField(label="Confirm Identification:", widget=forms.Select(choices=[]))
+
+    class Meta:
+        model = models.SpecimenUpload
+        fields = ['choice']
+
+    def __init__(self, *args, choices=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if choices:
+            self.fields['choice'].widget.choices = choices

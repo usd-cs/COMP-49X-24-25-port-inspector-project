@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
 from port_inspector_app.models import Image, SpecimenUpload, User, KnownSpecies, Genus
-from .forms import UserRegisterForm, SpecimenUploadForm
+from .forms import UserRegisterForm, SpecimenUploadForm, ConfirmIdForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -185,6 +185,13 @@ def results_view(request):
         "/static/images/sample3.jpg",
         "/static/images/sample4.jpg",
     ]
+
+    # Confirm species form
+    if request.method == "POST":
+        form = ConfirmIdForm(request.POST, choices=formatted_species_results[1:])
+        if form.is_valid():
+            # The relevant SpecimenUpload
+            pass
 
     return render(
         request,

@@ -73,6 +73,8 @@ class SpecimenUpload(models.Model):
     genus = models.JSONField(default=default_genus)
     species = models.JSONField(default=default_species)
 
+    final_identification = models.TextField()
+
     def clean(self):
         # Perform validation if we already have a pk and have been saved
         if self.id:
