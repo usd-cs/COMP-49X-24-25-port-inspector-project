@@ -16,8 +16,6 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from .tokens import account_activation_token
 
-SALT_KEY = "callosobruchus!maculatus"
-
 
 def verify_email(request):
     if request.method == "POST":
@@ -142,7 +140,7 @@ def view_history(request):
         specimen = SpecimenUpload.objects.filter(user=request.user)
         uploads = []
         for upload in specimen:
-            hashed_ID = hmac.new(SALT_KEY.encode(), f"{upload.id}".encode(), hashlib.sha256).hexdigest()
+            hashed_ID = signing.dumps(upload.id, salt=settings.SALT_KEY)
             uploads.append((upload, hashed_ID))
         return render(request, 'history.html', {'uploads': uploads, 'MEDIA_URL': settings.MEDIA_URL})
     else:
@@ -214,12 +212,15 @@ def results_view(request, hashed_ID):
     else:
         confirm_form = ConfirmIdForm(choices=confirm_choices)
 
+    confirmed_species = upload.final_identification
+
     return render(
         request,
         "results.html",
         {
             "species_results": formatted_species_results[:6],  # Ensure only 5 species + 1 genus are displayed
             "likely_species": likely_species,
+            "confirmed_species": confirmed_species,
             "image_urls": image_urls,
             "confirm_form": confirm_form
         },
