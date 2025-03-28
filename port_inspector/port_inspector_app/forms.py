@@ -88,13 +88,13 @@ class SpecimenUploadForm(forms.ModelForm):
         return specimen
 
 class ConfirmIdForm(forms.ModelForm):
-    choice = forms.CharField(label="Confirm Identification:", widget=forms.Select(choices=[]))
+    choice = forms.ChoiceField(label="Confirm Identification:", choices=[], widget=forms.Select())
 
     class Meta:
         model = models.SpecimenUpload
         fields = ['choice']
 
-    def __init__(self, *args, choices=None, **kwargs):
+    def __init__(self, *args, **kwargs):
+        choices = kwargs.pop('choices', [])
         super().__init__(*args, **kwargs)
-        if choices:
-            self.fields['choice'].widget.choices = choices
+        self.fields['choice'].choices = choices

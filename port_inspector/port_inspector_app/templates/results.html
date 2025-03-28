@@ -158,7 +158,7 @@
   <div class="container">
     <div class="image-section">
       {% for image in image_urls %}
-        <img src="{{ image }}" alt="Uploaded Image">
+        <img src="/uploads/{{ image }}" alt="Uploaded Image">
       {% endfor %}
     </div>
 
@@ -182,6 +182,7 @@
             <td><a href="{{ species_results.0.resource_link }}" target="_blank">more here</a></td>
           </tr>
         {% endif %}
+        <tr><td colspan="2" style="border-left-style:hidden;border-right-style:hidden;padding-bottom:1em;"></td></tr>
 
         {% for species in species_results|slice:"1:6" %}
         <tr>
@@ -195,20 +196,22 @@
       </table>
 
       <div class="action-buttons">
-        <form class="confirm-form" action="/confirm_species/" method="POST">
+        <form class="confirm-form" method="POST">
           {% csrf_token %}
-          <label for="species-select"><strong>Confirm Identification:</strong></label>
+          {% comment %} <label for="species-select"><strong>Confirm Identification:</strong></label>
           <select name="confirmed_species" id="species-select">
             {% for species in species_results %}
               <option value="{{ species.species_name }}">{{ species.species_name }}</option>
             {% endfor %}
-          </select>
-          <button type="submit" class="confirm-btn">Confirm</button>
-        </form>
+          </select> {% endcomment %}
+            {{ confirm_form }}
+            <button type="submit" class="confirm-btn">Confirm</button>
+          </form>
+
 
         <form class="unknown-form" action="/notify_unknown/" method="POST">
           {% csrf_token %}
-          <button type="submit" class="unknown-btn">Unknown Species - Notify Dr. Morse</button>
+          <button type="submit" class="unknown-btn">Unknown Species</button>
         </form>
       </div>
     </div>
