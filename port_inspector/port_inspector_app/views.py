@@ -213,6 +213,7 @@ def results_view(request, hashed_ID):
         confirm_form = ConfirmIdForm(request.POST, choices=confirm_choices)
         if confirm_form.is_valid():
             upload.final_identification = confirm_form.cleaned_data['choice']
+            upload.save()  # Save new data to the database
             # TODO add some form of confirmation here
             print("IDENTIFIED AS: ", upload.final_identification)
     else:
