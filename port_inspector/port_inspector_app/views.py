@@ -148,8 +148,12 @@ def view_history(request):
 
 
 def results_view(request, hashed_ID):
-    upload_id = signing.loads(hashed_ID, salt=settings.SALT_KEY)
-    upload = SpecimenUpload.objects.get(id=upload_id)
+    try:
+        upload_id = signing.loads(hashed_ID, salt=settings.SALT_KEY)
+        upload = SpecimenUpload.objects.get(id=upload_id)
+    except:
+        # Invalid id/Upload does not exist
+        upload_id, upload = None, None
 
     # This data comes from the BeetleID team
     species_results = [("species1", 95.5), ("species2", 23.9), ("species3", 15.7), ("species4", 12.3), ("species5", 5.5)]
@@ -195,10 +199,12 @@ def results_view(request, hashed_ID):
         "/static/images/sample3.jpg",
         "/static/images/sample4.jpg",
     ]
-    image_urls[0] = upload.frontal_image.image if upload.frontal_image is not None else "default_image.jpg"
-    image_urls[1] = upload.dorsal_image.image if upload.dorsal_image is not None else "default_image.jpg"
-    image_urls[2] = upload.caudal_image.image if upload.caudal_image is not None else "default_image.jpg"
-    image_urls[3] = upload.lateral_image.image if upload.lateral_image is not None else "default_image.jpg"
+
+    if upload:
+        image_urls[0] = upload.frontal_image.image if upload.frontal_image is not None else "default_image.jpg"
+        image_urls[1] = upload.dorsal_image.image if upload.dorsal_image is not None else "default_image.jpg"
+        image_urls[2] = upload.caudal_image.image if upload.caudal_image is not None else "default_image.jpg"
+        image_urls[3] = upload.lateral_image.image if upload.lateral_image is not None else "default_image.jpg"
 
     confirm_choices = [(item["species_name"], item["species_name"]) for item in formatted_species_results[1:]]
 
@@ -212,7 +218,7 @@ def results_view(request, hashed_ID):
     else:
         confirm_form = ConfirmIdForm(choices=confirm_choices)
 
-    confirmed_species = upload.final_identification
+    confirmed_species = upload.final_identification if upload else None
 
     return render(
         request,
