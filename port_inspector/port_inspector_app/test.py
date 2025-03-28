@@ -1,8 +1,10 @@
 from django.test import TestCase
+from django.conf import settings
 from unittest.mock import patch, MagicMock
 from django.urls import reverse
 from django.http import HttpRequest
 from django.core.exceptions import ValidationError
+from django.core import signing
 from port_inspector_app.views import results_view
 from port_inspector_app.models import SpecimenUpload, Genus, KnownSpecies, User, Image
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -183,7 +185,7 @@ class ResultsViewTests(TestCase):
         request.method = 'GET'
 
         # Call the view function
-        hashed_ID = "mocked_hash_value"  # Fake hash
+        hashed_ID = signing.dumps("1", salt=settings.SALT_KEY)  # Fake hash
         response = results_view(request, hashed_ID)
 
         # Check that the response status code is 200
@@ -209,7 +211,7 @@ class ResultsViewTests(TestCase):
         request.method = 'GET'
 
         # Call the view function
-        hashed_ID = "mocked_hash_value"  # Fake hash
+        hashed_ID = signing.dumps("1", salt=settings.SALT_KEY)  # Fake hash
         response = results_view(request, hashed_ID)
 
         # Check that the response status code is 200

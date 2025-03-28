@@ -3,8 +3,8 @@ import hmac
 from django.shortcuts import render, redirect
 from django.conf import settings
 from port_inspector_app.models import Image, SpecimenUpload, User, KnownSpecies, Genus
-from django.core.signing import Signer, BadSignature
-from .forms import UserRegisterForm, SpecimenUploadForm
+from .forms import UserRegisterForm, SpecimenUploadForm, ConfirmIdForm
+from django.core import signing
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -15,8 +15,6 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from .tokens import account_activation_token
-
-SALT_KEY = "callosobruchus!maculatus"
 
 
 def verify_email(request):
@@ -127,7 +125,7 @@ def upload_image(request):
 
         elif specimen_form.is_valid():
             specimen = specimen_form.save(user=request.user)
-            hashed_ID = hmac.new(SALT_KEY.encode(), f"{specimen.id}".encode(), hashlib.sha256).hexdigest()
+            hashed_ID = signing.dumps(specimen.id, salt=settings.SALT_KEY)
             return redirect("results", hashed_ID=hashed_ID)  # go to a UNIQUE URL for the results
 
     else:
@@ -142,7 +140,7 @@ def view_history(request):
         specimen = SpecimenUpload.objects.filter(user=request.user)
         uploads = []
         for upload in specimen:
-            hashed_ID = hmac.new(SALT_KEY.encode(), f"{upload.id}".encode(), hashlib.sha256).hexdigest()
+            hashed_ID = signing.dumps(upload.id, salt=settings.SALT_KEY)
             uploads.append((upload, hashed_ID))
         return render(request, 'history.html', {'uploads': uploads, 'MEDIA_URL': settings.MEDIA_URL})
     else:
@@ -150,6 +148,13 @@ def view_history(request):
 
 
 def results_view(request, hashed_ID):
+    try:
+        upload_id = signing.loads(hashed_ID, salt=settings.SALT_KEY)
+        upload = SpecimenUpload.objects.get(id=upload_id)
+    except (SpecimenUpload.DoesNotExist):
+        # Invalid id/Upload does not exist
+        upload_id, upload = None, None
+
     # This data comes from the BeetleID team
     species_results = [("species1", 95.5), ("species2", 23.9), ("species3", 15.7), ("species4", 12.3), ("species5", 5.5)]
     genus_result = ("genus1", 92.4)
@@ -174,16 +179,15 @@ def results_view(request, hashed_ID):
         for species in species_results
     ]
 
-    # Include the genus at the top
-    if genus_dict:
-        formatted_species_results.insert(0, {
-            "species_name": genus_name,
-            "confidence_level": genus_result[1],
-            "resource_link": genus_dict.get(genus_name, "#"),
-        })
-
     # Sort by confidence level (highest first)
     formatted_species_results.sort(key=lambda x: x["confidence_level"], reverse=True)
+
+    # Include the genus at the top
+    formatted_species_results.insert(0, {
+        "species_name": genus_name,
+        "confidence_level": genus_result[1],
+        "resource_link": genus_dict.get(genus_name, "#"),
+    })
 
     # Determine the most likely species (excluding genus)
     likely_species = formatted_species_results[1]["species_name"] if len(formatted_species_results) > 1 else "Unknown"
@@ -196,12 +200,35 @@ def results_view(request, hashed_ID):
         "/static/images/sample4.jpg",
     ]
 
+    if upload:
+        image_urls[0] = upload.frontal_image.image if upload.frontal_image is not None else "default_image.jpg"
+        image_urls[1] = upload.dorsal_image.image if upload.dorsal_image is not None else "default_image.jpg"
+        image_urls[2] = upload.caudal_image.image if upload.caudal_image is not None else "default_image.jpg"
+        image_urls[3] = upload.lateral_image.image if upload.lateral_image is not None else "default_image.jpg"
+
+    confirm_choices = [(item["species_name"], item["species_name"]) for item in formatted_species_results[1:]]
+
+    # Confirm species form
+    if request.method == "POST":
+        confirm_form = ConfirmIdForm(request.POST, choices=confirm_choices)
+        if confirm_form.is_valid():
+            upload.final_identification = confirm_form.cleaned_data['choice']
+            upload.save()  # Save new data to the database
+            # TODO add some form of confirmation here
+            print("IDENTIFIED AS: ", upload.final_identification)
+    else:
+        confirm_form = ConfirmIdForm(choices=confirm_choices)
+
+    confirmed_species = upload.final_identification if upload else None
+
     return render(
         request,
         "results.html",
         {
             "species_results": formatted_species_results[:6],  # Ensure only 5 species + 1 genus are displayed
             "likely_species": likely_species,
+            "confirmed_species": confirmed_species,
             "image_urls": image_urls,
+            "confirm_form": confirm_form
         },
     )

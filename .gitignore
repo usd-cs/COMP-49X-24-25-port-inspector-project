@@ -17,6 +17,7 @@ media/
 
 # Static files
 static/
+uploads/uploads
 
 # OS or Editor related files
 .DS_Store
