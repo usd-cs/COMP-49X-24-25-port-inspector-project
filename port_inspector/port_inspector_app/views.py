@@ -151,7 +151,7 @@ def results_view(request, hashed_ID):
     try:
         upload_id = signing.loads(hashed_ID, salt=settings.SALT_KEY)
         upload = SpecimenUpload.objects.get(id=upload_id)
-    except:
+    except (SpecimenUpload.DoesNotExist):
         # Invalid id/Upload does not exist
         upload_id, upload = None, None
 
