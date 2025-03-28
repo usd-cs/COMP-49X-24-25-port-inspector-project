@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from port_inspector_app.models import Image, SpecimenUpload, User, KnownSpecies, Genus
 from .forms import UserRegisterForm, SpecimenUploadForm, ConfirmIdForm
-from django.core import signing 
+from django.core import signing
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -146,7 +146,7 @@ def view_history(request):
 def results_view(request, hashed_ID):
     upload_id = signing.loads(hashed_ID, salt=settings.SALT_KEY)
     upload = SpecimenUpload.objects.get(id=upload_id)
-    
+
     # This data comes from the BeetleID team
     species_results = [("species1", 95.5), ("species2", 23.9), ("species3", 15.7), ("species4", 12.3), ("species5", 5.5)]
     genus_result = ("genus1", 92.4)
@@ -181,7 +181,6 @@ def results_view(request, hashed_ID):
         "resource_link": genus_dict.get(genus_name, "#"),
     })
 
-
     # Determine the most likely species (excluding genus)
     likely_species = formatted_species_results[1]["species_name"] if len(formatted_species_results) > 1 else "Unknown"
 
@@ -203,10 +202,9 @@ def results_view(request, hashed_ID):
     if request.method == "POST":
         confirm_form = ConfirmIdForm(request.POST, choices=confirm_choices)
         if confirm_form.is_valid():
-            # The relevant SpecimenUpload
             upload.final_identification = confirm_form.cleaned_data['choice']
+            # TODO add some form of confirmation here
             print("IDENTIFIED AS: ", upload.final_identification)
-            
     else:
         confirm_form = ConfirmIdForm(choices=confirm_choices)
 

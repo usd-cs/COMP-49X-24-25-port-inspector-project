@@ -87,6 +87,7 @@ class SpecimenUploadForm(forms.ModelForm):
 
         return specimen
 
+
 class ConfirmIdForm(forms.ModelForm):
     choice = forms.ChoiceField(label="Confirm Identification:", choices=[], widget=forms.Select())
 

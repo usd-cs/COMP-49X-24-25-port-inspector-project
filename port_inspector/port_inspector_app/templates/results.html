@@ -198,12 +198,6 @@
       <div class="action-buttons">
         <form class="confirm-form" method="POST">
           {% csrf_token %}
-          {% comment %} <label for="species-select"><strong>Confirm Identification:</strong></label>
-          <select name="confirmed_species" id="species-select">
-            {% for species in species_results %}
-              <option value="{{ species.species_name }}">{{ species.species_name }}</option>
-            {% endfor %}
-          </select> {% endcomment %}
             {{ confirm_form }}
             <button type="submit" class="confirm-btn">Confirm</button>
           </form>
