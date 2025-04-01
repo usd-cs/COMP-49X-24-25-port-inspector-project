@@ -232,3 +232,15 @@ def results_view(request, hashed_ID):
             "confirm_form": confirm_form
         },
     )
+
+def notify_unknown(request):
+    if request.method == "POST":
+        user = request.user
+        send_to_email = "akrishnadasan@sandiego.edu" #this will be dr.Morse's email
+        subject = "Port Inspector App - Unknown Species Uploaded"
+        message = "help, an unkown species what uploaded" #want to put results page of upload
+        email = EmailMessage(subject, message, to=[send_to_email])
+        email.content_subtype = "html"
+        email.send()
+
+    return redirect("/history/")

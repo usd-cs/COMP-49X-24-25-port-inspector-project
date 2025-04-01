@@ -42,5 +42,6 @@ urlpatterns = [
         name="verify-email-complete",
     ),
     path("results/<str:hashed_ID>", views.results_view, name="results"),
+	 path("notify_unknown/", views.notify_unknown, name="notify_unknown"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # storing uploaded images to our MEDIA_URL
