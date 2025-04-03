@@ -233,10 +233,12 @@ def results_view(request, hashed_ID):
         },
     )
 
+
 def notify_unknown(request):
     if request.method == "POST":
-        user = request.user
-        send_to_email = "akrishnadasan@sandiego.edu" #this will be dr.Morse's email
+        #  user = request.user
+        send_to_email = "akrishnadasan@sandiego.edu"
+        #  this will be dr.Morse's email
         results_page_url = request.META.get("HTTP_REFERER", "/history/")
         subject = "Port Inspector App - Unknown Species Uploaded"
         message = f"""
