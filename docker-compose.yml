@@ -22,8 +22,8 @@ services:
   proxy:
     image: nginx:latest
     ports:
-      - "8080:8080"    # secure public access port
-      - "8000:8000"    # direct access for your Django web server through the proxy
+      - "443:8080"    # secure public access port
+      - "80:8000"    # direct access for your Django web server through the proxy
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt:/etc/letsencrypt
