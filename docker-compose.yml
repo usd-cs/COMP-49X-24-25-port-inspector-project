@@ -5,13 +5,28 @@ services:
       MYENV: EXAMPLE
     volumes:
       - .:/code
+
   web_migrate:
     extends:
       service: web
     command: python port_inspector/manage.py migrate
+
   web_run:
     extends:
       service: web
     command: python port_inspector/manage.py runserver 0.0.0.0:8000
+    # Remove the ports from here (DO NOT expose port 8000 directly)
+    # ports:
+    #   - "8000:8000"
+
+  proxy:
+    image: nginx:latest
     ports:
-      - "8000:8000"
+      - "443:8080"    # secure public access port
+      - "80:8000"    # direct access for your Django web server through the proxy
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - /etc/letsencrypt:/etc/letsencrypt
+    restart: always
+    depends_on:
+      - web_run  # Make sure web_run is ready before starting nginx
