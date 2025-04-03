@@ -1,11 +1,11 @@
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from django.conf import settings
 from unittest.mock import patch, MagicMock
 from django.urls import reverse
 from django.http import HttpRequest
 from django.core.exceptions import ValidationError
 from django.core import signing
-from port_inspector_app.views import results_view
+from port_inspector_app.views import results_view, notify_unknown
 from port_inspector_app.models import SpecimenUpload, Genus, KnownSpecies, User, Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -224,3 +224,23 @@ class ResultsViewTests(TestCase):
 
         # Check if species1's confidence level appears first in the HTML
         self.assertIn('95.5', html_content)
+
+
+class NotifyUnknownTest(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    @patch("django.core.mail.EmailMessage.send")
+    def test_notify_unknown_email_sent(self, mock_email_send):
+        """Test that an email is sent when notify_unknown is called."""
+        request = self.factory.post("/notify_unknown/")
+        request.META["HTTP_REFERER"] = "http://testserver/results/"
+
+        response = notify_unknown(request)
+
+        # Ensure redirect occurs
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/history/")
+
+        # Ensure email was attempted to be sent
+        mock_email_send.assert_called_once()
