@@ -6,3 +6,6 @@ tzdata==2022.7
 whitenoise==6.2.0
 Pillow
 six
+torchvision
+torch
+dill
