@@ -1,11 +1,16 @@
-<style>
-    /* Basic Reset and Background */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <style>
     * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
     }
-    
+
     body {
         font-family: Arial, sans-serif;
         background-color: #f3f4f6;
@@ -15,7 +20,6 @@
         height: 100vh;
     }
 
-    /* Container Styling */
     .login-container {
         width: 100%;
         max-width: 400px;
@@ -26,14 +30,12 @@
         text-align: center;
     }
 
-    /* Title Styling */
     h1 {
         margin-bottom: 20px;
         font-size: 24px;
         color: #333;
     }
 
-    /* Form Styling */
     .form-with-validation {
         display: flex;
         flex-direction: column;
@@ -49,13 +51,11 @@
         font-size: 16px;
     }
 
-    .form-with-validation input[type="text"]:focus,
-    .form-with-validation input[type="password"]:focus {
+    .form-with-validation input:focus {
         border-color: #007bff;
         outline: none;
     }
 
-    /* Button Styling */
     .button {
         padding: 10px;
         font-size: 16px;
@@ -63,21 +63,22 @@
         background-color: #007bff;
         border: none;
         border-radius: 4px;
+        cursor: pointer;
     }
 
     .button:hover {
         background-color: #0056b3;
     }
-</style>
-
-
-<div class="login-container">
+  </style>
+</head>
+<body>
+  <div class="login-container">
     <h1>Login</h1>
-    
     <form class="form-with-validation" action="{% url 'login' %}" method="post">
-        {% csrf_token %}
-        {{ form.as_table }}
-        <br/>
-        <button class="button"">Login</button> 
+      {% csrf_token %}
+      {{ form.as_table }}
+      <button class="button">Login</button>
     </form>
-</div>
+  </div>
+</body>
+</html>
