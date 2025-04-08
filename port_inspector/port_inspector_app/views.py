@@ -204,15 +204,15 @@ def results_view(request, hashed_ID):
 
     # Determine the most likely species (excluding genus)
     likely_species = formatted_species_results[1]["species_name"] if len(formatted_species_results) > 1 else "Unknown"
-
+    
     image_urls = ["","","",""]
     if upload:
-        image_urls[0] = upload.frontal_image.image if upload.frontal_image is not None else "uploads/default_image.jpg"
-        image_urls[1] = upload.dorsal_image.image if upload.dorsal_image is not None else "uploads/default_image.jpg"
-        image_urls[2] = upload.caudal_image.image if upload.caudal_image is not None else "uploads/default_image.jpg"
-        image_urls[3] = upload.lateral_image.image if upload.lateral_image is not None else "uploads/default_image.jpg"
+        image_urls[0] = upload.frontal_image.image if upload.frontal_image is not None else "default_image.jpg"
+        image_urls[1] = upload.dorsal_image.image if upload.dorsal_image is not None else "default_image.jpg"
+        image_urls[2] = upload.caudal_image.image if upload.caudal_image is not None else "default_image.jpg"
+        image_urls[3] = upload.lateral_image.image if upload.lateral_image is not None else "default_image.jpg"
 
-    confirm_choices = [(item["species_name"], item["species_name"]) for item in formatted_species_results[1:]] + [("Other", "Other")]
+    confirm_choices = [(name, name) for name in species_names] + [("Other", "Other")]
 
     # Confirm species form
     if request.method == "POST":
@@ -232,6 +232,7 @@ def results_view(request, hashed_ID):
         "results.html",
         {
             "species_results": formatted_species_results[:6],  # Ensure only 5 species + 1 genus are displayed
+            "upload_id":upload.id,
             "likely_species": likely_species,
             "confirmed_species": confirmed_species,
             "image_urls": image_urls,

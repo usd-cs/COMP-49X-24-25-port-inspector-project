@@ -62,7 +62,7 @@ def evaluate_images(late_path, dors_path, fron_path, caud_path):
     CAUD_IMG = Image.open(caud_path) if caud_path else None    
     
     # Run the species evaluation method
-    top_5_species = species_evaluator.evaluate_image(
+    top_species = species_evaluator.evaluate_image(
         late=LATE_IMG, dors=DORS_IMG, fron=FRON_IMG, caud=CAUD_IMG
     )
 
@@ -72,17 +72,18 @@ def evaluate_images(late_path, dors_path, fron_path, caud_path):
     )
 
     # Print classification results
-    print(f"1. Predicted Species: {top_5_species[0][0]}, Confidence: {top_5_species[0][1]:.3f}\n")
-    print(f"2. Predicted Species: {top_5_species[1][0]}, Confidence: {top_5_species[1][1]:.3f}\n")
-    print(f"3. Predicted Species: {top_5_species[2][0]}, Confidence: {top_5_species[2][1]:.3f}\n")
-    print(f"4. Predicted Species: {top_5_species[3][0]}, Confidence: {top_5_species[3][1]:.3f}\n")
-    print(f"5. Predicted Species: {top_5_species[4][0]}, Confidence: {top_5_species[4][1]:.3f}\n")
+    print(f"1. Predicted Species: {top_species[0][0]}, Confidence: {top_species[0][1]:.5f}\n")
+    print(f"2. Predicted Species: {top_species[1][0]}, Confidence: {top_species[1][1]:.5f}\n")
+    print(f"3. Predicted Species: {top_species[2][0]}, Confidence: {top_species[2][1]:.5f}\n")
+    print(f"4. Predicted Species: {top_species[3][0]}, Confidence: {top_species[3][1]:.5f}\n")
+    print(f"5. Predicted Species: {top_species[4][0]}, Confidence: {top_species[4][1]:.5f}\n")
     
     print("Top genus: ", top_genus)
 
-    # Modify confidence numbers to be a percentage, Ensure name strings are in title format
-    for i in range(len(top_5_species)):
-        top_5_species[i] = (top_5_species[i][0].title(), top_5_species[i][1]*100.0)
+    # Take top 5 species, modify confidence numbers to be a percentage, Ensure name strings are in title format
+    top_5_species = []
+    for i in range(5):
+        top_5_species.append((top_species[i][0].title(), top_species[i][1]*100.0))
     top_genus = top_genus[0], top_genus[1]*100.0
 
     return top_5_species, top_genus
