@@ -155,17 +155,18 @@ def results_view(request, hashed_ID):
         upload_id, upload = None, None
 
     # If SpecimenUpload has not been evaluated yet, evaluate and store in db
-    if upload.genus[0] == None and upload.species[0][0] == None:
-        lat_image = upload.lateral_image.image if upload.lateral_image else None
-        dor_image = upload.dorsal_image.image if upload.dorsal_image else None
-        fron_image = upload.frontal_image.image if upload.frontal_image else None
-        caud_image = upload.caudal_image.image if upload.caudal_image else None
+    if upload:
+        if upload.genus[0] == None and upload.species[0][0] == None:
+            lat_image = upload.lateral_image.image if upload.lateral_image else None
+            dor_image = upload.dorsal_image.image if upload.dorsal_image else None
+            fron_image = upload.frontal_image.image if upload.frontal_image else None
+            caud_image = upload.caudal_image.image if upload.caudal_image else None
 
-        s, g = species_eval.evaluate_images(lat_image, dor_image, fron_image, caud_image)
-        
-        upload.species = s
-        upload.genus = g
-        upload.save()
+            s, g = species_eval.evaluate_images(lat_image, dor_image, fron_image, caud_image)
+            
+            upload.species = s
+            upload.genus = g
+            upload.save()
     
     # Get ML results from the db
     species_results = upload.species
@@ -206,10 +207,10 @@ def results_view(request, hashed_ID):
 
     image_urls = ["","","",""]
     if upload:
-        image_urls[0] = upload.frontal_image.image if upload.frontal_image is not None else "default_image.jpg"
-        image_urls[1] = upload.dorsal_image.image if upload.dorsal_image is not None else "default_image.jpg"
-        image_urls[2] = upload.caudal_image.image if upload.caudal_image is not None else "default_image.jpg"
-        image_urls[3] = upload.lateral_image.image if upload.lateral_image is not None else "default_image.jpg"
+        image_urls[0] = upload.frontal_image.image if upload.frontal_image is not None else "uploads/default_image.jpg"
+        image_urls[1] = upload.dorsal_image.image if upload.dorsal_image is not None else "uploads/default_image.jpg"
+        image_urls[2] = upload.caudal_image.image if upload.caudal_image is not None else "uploads/default_image.jpg"
+        image_urls[3] = upload.lateral_image.image if upload.lateral_image is not None else "uploads/default_image.jpg"
 
     confirm_choices = [(item["species_name"], item["species_name"]) for item in formatted_species_results[1:]] + [("Other", "Other")]
 
