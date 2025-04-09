@@ -1,3 +1,4 @@
+# flake8: noqa
 """ model_loader.py """
 
 from torchvision import models

@@ -156,18 +156,18 @@ def results_view(request, hashed_ID):
 
     # If SpecimenUpload has not been evaluated yet, evaluate and store in db
     if upload:
-        if upload.genus[0] == None and upload.species[0][0] == None:
+        if upload.genus[0] is None and upload.species[0][0] is None:
             lat_image = upload.lateral_image.image if upload.lateral_image else None
             dor_image = upload.dorsal_image.image if upload.dorsal_image else None
             fron_image = upload.frontal_image.image if upload.frontal_image else None
             caud_image = upload.caudal_image.image if upload.caudal_image else None
 
             s, g = species_eval.evaluate_images(lat_image, dor_image, fron_image, caud_image)
-            
+
             upload.species = s
             upload.genus = g
             upload.save()
-    
+
     # Get ML results from the db
     species_results = upload.species
     genus_result = upload.genus
@@ -204,8 +204,8 @@ def results_view(request, hashed_ID):
 
     # Determine the most likely species (excluding genus)
     likely_species = formatted_species_results[1]["species_name"] if len(formatted_species_results) > 1 else "Unknown"
-    
-    image_urls = ["","","",""]
+
+    image_urls = ["", "", "", ""]
     if upload:
         image_urls[0] = upload.frontal_image.image if upload.frontal_image is not None else "default_image.jpg"
         image_urls[1] = upload.dorsal_image.image if upload.dorsal_image is not None else "default_image.jpg"
@@ -232,7 +232,7 @@ def results_view(request, hashed_ID):
         "results.html",
         {
             "species_results": formatted_species_results[:6],  # Ensure only 5 species + 1 genus are displayed
-            "upload_id":upload.id,
+            "upload_id": upload.id,
             "likely_species": likely_species,
             "confirmed_species": confirmed_species,
             "image_urls": image_urls,

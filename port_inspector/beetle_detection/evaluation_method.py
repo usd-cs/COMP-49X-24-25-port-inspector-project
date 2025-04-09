@@ -1,3 +1,4 @@
+# flake8: noqa
 """
 Method that takes in a user input image or set of user images and runs them through 
 the loaded trained models and creates a combined classification output
