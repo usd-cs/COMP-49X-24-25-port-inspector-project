@@ -202,7 +202,9 @@ class ResultsViewTests(TestCase):
         )
 
         # Mock the return values of the queries with species results having different confidence levels
-        mock_species_filter.return_value.values_list.return_value = [
+        mock_species_qs = MagicMock()
+
+        mock_species_qs.values_list.return_value = [
             ("species1", "http://species1.com"),  # confidence 95.5
             ("species2", "http://species2.com"),  # confidence 23.9
             ("species3", "http://species3.com"),  # confidence 15.7
@@ -210,8 +212,12 @@ class ResultsViewTests(TestCase):
             ("species5", "http://species5.com")   # confidence 5.5
         ]
 
+        mock_species_filter.return_value = mock_species_qs
+
         # Mock genus result
-        mock_genus_filter.return_value.values_list.return_value = [("genus1", "http://genus1.com")]
+        mock_genus_qs = MagicMock()
+        mock_genus_qs.values_list.return_value = [("genus1", "http://genus1.com")]
+        mock_genus_filter.return_value = mock_genus_qs
 
         # Create a mock request object
         request = HttpRequest()
