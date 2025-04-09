@@ -235,7 +235,7 @@ def results_view(request, hashed_ID):
         "results.html",
         {
             "species_results": formatted_species_results[:6],  # Ensure only 5 species + 1 genus are displayed
-            "upload_id": upload.id,
+            "upload_id": upload.id if upload else "INVALID ID",
             "likely_species": likely_species,
             "confirmed_species": confirmed_species,
             "image_urls": image_urls,
