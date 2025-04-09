@@ -193,7 +193,14 @@ class ResultsViewTests(TestCase):
 
     @patch("port_inspector_app.views.KnownSpecies.objects.filter")
     @patch("port_inspector_app.views.Genus.objects.filter")
-    def test_results_view_species_sorted_by_confidence(self, mock_genus_filter, mock_species_filter):
+    @patch("port_inspector_app.views.species_eval.evaluate_images")
+    def test_results_view_species_sorted_by_confidence(self, mock_genus_filter, mock_species_filter, mock_evaluate_images):
+        # Mock evaluate_images to return dummy data with different confidence values
+        mock_evaluate_images.return_value = (
+            [("species2", 23.9), ("species5", 5.5), ("species3", 15.7), ("species1", 95.5), ("species4", 12.3)],
+            ("genus1", 99.9)
+        )
+
         # Mock the return values of the queries with species results having different confidence levels
         mock_species_filter.return_value.values_list.return_value = [
             ("species1", "http://species1.com"),  # confidence 95.5
