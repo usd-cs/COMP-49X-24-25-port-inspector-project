@@ -1,6 +1,6 @@
 # flake8: noqa
 """ simulator.py """
-import json
+import json, os
 from PIL import Image
 from .model_loader import ModelLoader
 from .evaluation_method import EvaluationMethod
@@ -21,10 +21,10 @@ GENUS_OUTPUTS = 9
 
 # Load species models
 species_model_paths = {
-        "caud" : "port_inspector/beetle_detection/spec_caud.pth", 
-        "dors" : "port_inspector/beetle_detection/spec_dors.pth",
-        "fron" : "port_inspector/beetle_detection/spec_fron.pth",
-        "late" : "port_inspector/beetle_detection/spec_late.pth"
+        "caud" : os.path.join(os.path.dirname(os.path.abspath(__file__)), "spec_caud.pth"), 
+        "dors" : os.path.join(os.path.dirname(os.path.abspath(__file__)), "spec_dors.pth"),
+        "fron" : os.path.join(os.path.dirname(os.path.abspath(__file__)), "spec_fron.pth"),
+        "late" : os.path.join(os.path.dirname(os.path.abspath(__file__)), "spec_late.pth")
     }
 species_ml = ModelLoader(species_model_paths, SPECIES_OUTPUTS)
 species_models = species_ml.get_models()
@@ -34,10 +34,10 @@ for key in species_models:
 
 # Load genus models
 genus_model_paths = {
-        "caud" : "port_inspector/beetle_detection/gen_caud.pth", 
-        "dors" : "port_inspector/beetle_detection/gen_dors.pth",
-        "fron" : "port_inspector/beetle_detection/gen_fron.pth",
-        "late" : "port_inspector/beetle_detection/gen_late.pth"
+        "caud" : os.path.join(os.path.dirname(os.path.abspath(__file__)), "gen_caud.pth"), 
+        "dors" : os.path.join(os.path.dirname(os.path.abspath(__file__)), "gen_dors.pth"),
+        "fron" : os.path.join(os.path.dirname(os.path.abspath(__file__)), "gen_fron.pth"),
+        "late" : os.path.join(os.path.dirname(os.path.abspath(__file__)), "gen_late.pth")
     }
 genus_ml = ModelLoader(genus_model_paths, GENUS_OUTPUTS)
 genus_models = genus_ml.get_models()
@@ -47,8 +47,8 @@ for key in genus_models:
 
 
 # Initialize the EvaluationMethod object with the heaviest eval method set
-species_evaluator = EvaluationMethod("./port_inspector/beetle_detection/height.txt", species_models, 1, "./port_inspector/beetle_detection/spec_dict.json")
-genus_evaluator = GenusEvaluationMethod("./port_inspector/beetle_detection/height.txt", genus_models, 1, "./port_inspector/beetle_detection/gen_dict.json")
+species_evaluator = EvaluationMethod(os.path.join(os.path.dirname(os.path.abspath(__file__)), "height.txt"), species_models, 1, os.path.join(os.path.dirname(os.path.abspath(__file__)), "spec_dict.json"))
+genus_evaluator = GenusEvaluationMethod(os.path.join(os.path.dirname(os.path.abspath(__file__)), "height.txt"), genus_models, 1, os.path.join(os.path.dirname(os.path.abspath(__file__)), "gen_dict.json"))
 
 print("!!! ML Models loaded in evaluation mode !!!")
 

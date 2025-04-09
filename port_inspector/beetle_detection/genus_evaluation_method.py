@@ -64,7 +64,7 @@ class GenusEvaluationMethod:
         """
         transformations = []
 
-        with open("port_inspector/beetle_detection/caud_transformation.pth", "rb") as f:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "caud_transformation.pth"), "rb") as f:
             transformations.append(dill.load(f))
 
         # with open("port_inspector/beetle_detection/dors_transformation.pth", "rb") as f:
@@ -72,7 +72,7 @@ class GenusEvaluationMethod:
         # TODO get proper transformation files here and for lateral
         transformations.append(None)
 
-        with open("port_inspector/beetle_detection/fron_transformation.pth", "rb") as f:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "fron_transformation.pth"), "rb") as f:
             transformations.append(dill.load(f))
 
         # with open("port_inspector/beetle_detection/late_transformation.pth", "rb") as f:
