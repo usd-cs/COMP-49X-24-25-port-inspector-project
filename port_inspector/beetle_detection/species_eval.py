@@ -9,14 +9,12 @@ from django.conf import settings
 
 # -----Run once on import-----
 # read json to see size of outputs
-with open("./port_inspector/beetle_detection/spec_dict.json", 'r', encoding='utf-8') as spec_dict:
+# with open("./port_inspector/beetle_detection/spec_dict.json", 'r', encoding='utf-8') as spec_dict:
     # SPECIES_OUTPUTS = len(json.load(spec_dict))
     # TODO this should be from the json file but for now we hard code to 15 because of the weights given from ML team
-    pass
-with open("./port_inspector/beetle_detection/gen_dict.json", 'r', encoding='utf-8') as gen_dict:
+# with open("./port_inspector/beetle_detection/gen_dict.json", 'r', encoding='utf-8') as gen_dict:
     # GENUS_OUTPUTS = len(json.load(gen_dict))
     # TODO same here, should be read from json file
-    pass
 
 SPECIES_OUTPUTS = 15
 GENUS_OUTPUTS = 9
