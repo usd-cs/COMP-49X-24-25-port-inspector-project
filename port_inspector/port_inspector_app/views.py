@@ -168,9 +168,12 @@ def results_view(request, hashed_ID):
             upload.genus = g
             upload.save()
 
-    # Get ML results from the db
-    species_results = upload.species
-    genus_result = upload.genus
+        # Get ML results from the db
+        species_results = upload.species
+        genus_result = upload.genus
+    else:
+        species_results = [(None, None)]
+        genus_result = (None, None)
 
     # Fetch species URLs from the database
     species_names = [species[0] for species in species_results]
