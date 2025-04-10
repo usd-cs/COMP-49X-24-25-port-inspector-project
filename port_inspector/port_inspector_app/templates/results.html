@@ -21,17 +21,22 @@
       align-items: center;
       width: 100%;
       padding: 10px 20px;
+      box-sizing: border-box;
       background-color: #ffffff;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     header a {
-      text-decoration: none;
-      color: #333;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      margin: 0 10px;
+        text-decoration: none;
+        color: #333;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        margin: 0 10px;
+    }
+
+    header a span {
+        margin-left: 5px;
     }
 
     .container {
@@ -149,10 +154,16 @@
 </head>
 <body>
   <header>
-    <a href="/">🏠 Home</a>
-    <a href="/history">📜 History</a>
-    <a href="/upload">📤 Upload Photo</a>
-    <a href="/logout">👤 Profile</a>
+    <a href="/" class="icon">🏠<span>Home</span></a>
+    <a href="/history" class="icon">📜<span>History</span></a>
+    <a href="/upload" class="icon">📤<span>Upload Photo</span></a>
+    <a href="/profile" class="icon">👤<span>Profile</span></a>
+    {% if not request.user.is_authenticated %}
+    <a href="/login" class="icon">🔒<span>Login</span></a>
+    {% endif %}
+    {% if request.user.is_authenticated %}
+    <a href="/logout" class="icon">🔓<span>Logout</span></a>
+    {% endif %}
   </header>
 
   <div class="container">
