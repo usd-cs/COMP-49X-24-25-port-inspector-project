@@ -206,11 +206,12 @@ class ResultsViewTests(TestCase):
         mock_upload = MagicMock()
         mock_upload.genus = [None]
         mock_upload.species = [(None, None)]
+
         def save_side_effect():
             # After save, the genus/species are now updated
             mock_upload.species = mock_evaluate_images.return_value[0]
             mock_upload.genus = mock_evaluate_images.return_value[1]
-        
+
         mock_upload.save.side_effect = save_side_effect
 
         mock_upload.id = 1
