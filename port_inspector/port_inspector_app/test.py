@@ -194,12 +194,33 @@ class ResultsViewTests(TestCase):
     @patch("port_inspector_app.views.KnownSpecies")
     @patch("port_inspector_app.views.Genus")
     @patch("port_inspector_app.views.species_eval.evaluate_images")
-    def test_results_view_species_sorted_by_confidence(self, mock_genus, mock_species, mock_evaluate_images):
+    @patch("port_inspector_app.views.SpecimenUpload.objects.get")
+    def test_results_view_species_sorted_by_confidence(self, mock_genus, mock_species, mock_evaluate_images, mock_get_upload):
         # Mock evaluate_images to return dummy data with different confidence values
         mock_evaluate_images.return_value = (
             [("species2", 23.9), ("species5", 5.5), ("species3", 15.7), ("species1", 95.5), ("species4", 12.3)],
             ("genus1", 99.9)
         )
+
+        # Create a mock upload object
+        mock_upload = MagicMock()
+        mock_upload.genus = [None]
+        mock_upload.species = [(None, None)]
+        def save_side_effect():
+            # After save, the genus/species are now updated
+            mock_upload.species = mock_evaluate_images.return_value[0]
+            mock_upload.genus = mock_evaluate_images.return_value[1]
+        
+        mock_upload.save.side_effect = save_side_effect
+
+        mock_upload.id = 1
+        mock_upload.final_identification = None
+        mock_upload.frontal_image = None
+        mock_upload.dorsal_image = None
+        mock_upload.caudal_image = None
+        mock_upload.lateral_image = None
+
+        mock_get_upload.return_value = mock_upload
 
         # Mock the return values of the queries with species results having different confidence levels
         mock_species_qs = MagicMock()
