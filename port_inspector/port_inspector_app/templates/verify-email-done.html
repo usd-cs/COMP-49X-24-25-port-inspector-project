@@ -1,1 +1,5 @@
-<h3>An email has been sent with instructions to verify your email</h3>
+<form method="post" action="{% url 'your-view-name' %}">
+	{% csrf_token %}
+	<h3>An email has been sent with instructions to verify your email</h3>
+  </form>
+  
