@@ -213,10 +213,6 @@ class ResultsViewTests(TestCase):
         mock_upload.id = 1
         mock_upload.final_identification = None
 
-        # Skip triggering the evaluation logic
-        mock_upload.species[0][0] = "species2"
-        mock_upload.genus[0] = "genus1"
-
         mock_get_upload.return_value = mock_upload
 
         # Mock species and genus filter returns
