@@ -191,10 +191,10 @@ class ResultsViewTests(TestCase):
         # Check that the response status code is 200
         self.assertEqual(response.status_code, 200)
 
-    @patch("port_inspector_app.views.KnownSpecies.objects.filter")
-    @patch("port_inspector_app.views.Genus.objects.filter")
+    @patch("port_inspector_app.views.KnownSpecies")
+    @patch("port_inspector_app.views.Genus")
     @patch("port_inspector_app.views.species_eval.evaluate_images")
-    def test_results_view_species_sorted_by_confidence(self, mock_genus_filter, mock_species_filter, mock_evaluate_images):
+    def test_results_view_species_sorted_by_confidence(self, mock_genus, mock_species, mock_evaluate_images):
         # Mock evaluate_images to return dummy data with different confidence values
         mock_evaluate_images.return_value = (
             [("species2", 23.9), ("species5", 5.5), ("species3", 15.7), ("species1", 95.5), ("species4", 12.3)],
@@ -203,7 +203,6 @@ class ResultsViewTests(TestCase):
 
         # Mock the return values of the queries with species results having different confidence levels
         mock_species_qs = MagicMock()
-
         mock_species_qs.values_list.return_value = [
             ("species1", "http://species1.com"),  # confidence 95.5
             ("species2", "http://species2.com"),  # confidence 23.9
@@ -211,13 +210,12 @@ class ResultsViewTests(TestCase):
             ("species4", "http://species4.com"),  # confidence 12.3
             ("species5", "http://species5.com")   # confidence 5.5
         ]
-
-        mock_species_filter.return_value = mock_species_qs
+        mock_species.objects.filter.return_value = mock_species_qs
 
         # Mock genus result
         mock_genus_qs = MagicMock()
         mock_genus_qs.values_list.return_value = [("genus1", "http://genus1.com")]
-        mock_genus_filter.return_value = mock_genus_qs
+        mock_genus.objects.filter.return_value = mock_genus_qs
 
         # Create a mock request object
         request = HttpRequest()
