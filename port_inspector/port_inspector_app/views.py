@@ -137,12 +137,12 @@ def upload_image(request):
 def view_history(request):
     if request.user.is_authenticated:
         # create empty set of type SpecimenUpload
-        specimen = SpecimenUpload.objects.filter(user=request.user)
+        specimen = SpecimenUpload.objects.filter(user=request.user).order_by('-upload_date')
         uploads = []
         for upload in specimen:
             hashed_ID = signing.dumps(upload.id, salt=settings.SALT_KEY)
             uploads.append((upload, hashed_ID))
-        return render(request, 'history.html', {'uploads': uploads, 'MEDIA_URL': settings.MEDIA_URL})
+        return render(request, 'history.html', {'uploads': uploads})
     else:
         return redirect("/login/")
 

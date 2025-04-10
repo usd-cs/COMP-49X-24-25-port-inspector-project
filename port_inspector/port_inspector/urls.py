@@ -18,11 +18,13 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import RedirectView
 from port_inspector_app import views
 
 from . import settings
 
 urlpatterns = [
+    path("", RedirectView.as_view(url='/upload/', permanent=False), name="home"),
     path("admin/", admin.site.urls),
     path("upload/", views.upload_image, name="upload"),
     path("history/", views.view_history, name="history"),
