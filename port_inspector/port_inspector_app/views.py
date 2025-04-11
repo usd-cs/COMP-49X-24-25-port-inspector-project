@@ -1,7 +1,6 @@
-import hashlib
-import hmac
 from django.shortcuts import render, redirect
 from django.conf import settings
+from beetle_detection import species_eval
 from port_inspector_app.models import Image, SpecimenUpload, User, KnownSpecies, Genus
 from .forms import UserRegisterForm, SpecimenUploadForm, ConfirmIdForm
 from django.core import signing
@@ -151,9 +150,26 @@ def results_view(request, hashed_ID):
         # Invalid id/Upload does not exist
         upload_id, upload = None, None
 
-    # This data comes from the BeetleID team
-    species_results = [("species1", 95.5), ("species2", 23.9), ("species3", 15.7), ("species4", 12.3), ("species5", 5.5)]
-    genus_result = ("genus1", 92.4)
+    # If SpecimenUpload has not been evaluated yet, evaluate and store in db
+    if upload:
+        if upload.genus[0] is None and upload.species[0][0] is None:
+            lat_image = upload.lateral_image.image if upload.lateral_image else None
+            dor_image = upload.dorsal_image.image if upload.dorsal_image else None
+            fron_image = upload.frontal_image.image if upload.frontal_image else None
+            caud_image = upload.caudal_image.image if upload.caudal_image else None
+
+            s, g = species_eval.evaluate_images(lat_image, dor_image, fron_image, caud_image)
+
+            upload.species = s
+            upload.genus = g
+            upload.save()
+
+        # Get ML results from the db
+        species_results = upload.species
+        genus_result = upload.genus
+    else:
+        species_results = [(None, None)]
+        genus_result = (None, None)
 
     # Fetch species URLs from the database
     species_names = [species[0] for species in species_results]
@@ -188,21 +204,14 @@ def results_view(request, hashed_ID):
     # Determine the most likely species (excluding genus)
     likely_species = formatted_species_results[1]["species_name"] if len(formatted_species_results) > 1 else "Unknown"
 
-    # Dummy image URLs (replace with actual uploaded images if needed)
-    image_urls = [
-        "/static/images/sample1.jpg",
-        "/static/images/sample2.jpg",
-        "/static/images/sample3.jpg",
-        "/static/images/sample4.jpg",
-    ]
-
+    image_urls = ["", "", "", ""]
     if upload:
         image_urls[0] = upload.frontal_image.image if upload.frontal_image is not None else "default_image.jpg"
         image_urls[1] = upload.dorsal_image.image if upload.dorsal_image is not None else "default_image.jpg"
         image_urls[2] = upload.caudal_image.image if upload.caudal_image is not None else "default_image.jpg"
         image_urls[3] = upload.lateral_image.image if upload.lateral_image is not None else "default_image.jpg"
 
-    confirm_choices = [(item["species_name"], item["species_name"]) for item in formatted_species_results[1:]]
+    confirm_choices = [(name, name) for name in species_names] + [("Other", "Other")]
 
     # Confirm species form
     if request.method == "POST":
@@ -222,6 +231,7 @@ def results_view(request, hashed_ID):
         "results.html",
         {
             "species_results": formatted_species_results[:6],  # Ensure only 5 species + 1 genus are displayed
+            "upload_id": upload.id if upload else "INVALID ID",
             "likely_species": likely_species,
             "confirmed_species": confirmed_species,
             "image_urls": image_urls,

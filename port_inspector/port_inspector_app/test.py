@@ -193,18 +193,42 @@ class ResultsViewTests(TestCase):
 
     @patch("port_inspector_app.views.KnownSpecies.objects.filter")
     @patch("port_inspector_app.views.Genus.objects.filter")
-    def test_results_view_species_sorted_by_confidence(self, mock_genus_filter, mock_species_filter):
-        # Mock the return values of the queries with species results having different confidence levels
-        mock_species_filter.return_value.values_list.return_value = [
-            ("species1", "http://species1.com"),  # confidence 95.5
-            ("species2", "http://species2.com"),  # confidence 23.9
-            ("species3", "http://species3.com"),  # confidence 15.7
-            ("species4", "http://species4.com"),  # confidence 12.3
-            ("species5", "http://species5.com")   # confidence 5.5
+    @patch("port_inspector_app.views.SpecimenUpload.objects.get")
+    def test_results_view_species_sorted_by_confidence(
+        self, mock_get_upload, mock_genus_filter, mock_species_filter
+    ):
+        species_results = [
+            ("species2", 23.9),
+            ("species5", 5.5),
+            ("species3", 15.7),
+            ("species1", 95.5),
+            ("species4", 12.3),
         ]
+        genus_result = ("genus1", 99.9)
 
-        # Mock genus result
-        mock_genus_filter.return_value.values_list.return_value = [("genus1", "http://genus1.com")]
+        # Mock upload object with species/genus already filled in
+        mock_upload = MagicMock()
+        mock_upload.species = species_results
+        mock_upload.genus = genus_result
+        mock_upload.id = 1
+        mock_upload.final_identification = None
+
+        mock_get_upload.return_value = mock_upload
+
+        # Mock species and genus filter returns
+        mock_species_qs = MagicMock()
+        mock_species_qs.values_list.return_value = [
+            ("species1", "http://species1.com"),
+            ("species2", "http://species2.com"),
+            ("species3", "http://species3.com"),
+            ("species4", "http://species4.com"),
+            ("species5", "http://species5.com"),
+        ]
+        mock_species_filter.return_value = mock_species_qs
+
+        mock_genus_qs = MagicMock()
+        mock_genus_qs.values_list.return_value = [("genus1", "http://genus1.com")]
+        mock_genus_filter.return_value = mock_genus_qs
 
         # Create a mock request object
         request = HttpRequest()

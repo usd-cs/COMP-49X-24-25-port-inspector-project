@@ -174,7 +174,7 @@
     </div>
 
     <div class="results-section">
-      <h1>Upload #23456</h1>
+      <h1>Upload #{{ upload_id }}</h1>
       <p><strong>Likely Species:</strong> <span id="likely-species">{{ likely_species }}</span></p>
       <p><strong>Confirmed Species:</strong> <span id="likely-species">{{ confirmed_species | default:" Not Confirmed"}}</span></p>
 
@@ -189,7 +189,7 @@
           <tr>
             <td><strong>Genus:</strong> {{ species_results.0.species_name }}</td>
             <td class="{% if species_results.0.confidence_level >= 50 %}confidence-high{% elif species_results.0.confidence_level >= 20 %}confidence-medium{% else %}confidence-low{% endif %}">
-              {{ species_results.0.confidence_level }}%
+              {{ species_results.0.confidence_level | floatformat:"2" }}%
             </td>
             <td><a href="{{ species_results.0.resource_link }}" target="_blank">more here</a></td>
           </tr>
@@ -200,7 +200,7 @@
         <tr>
           <td><strong>Species {{ forloop.counter }}:</strong> {{ species.species_name }}</td>
           <td class="{% if species.confidence_level >= 50 %}confidence-high{% elif species.confidence_level >= 20 %}confidence-medium{% else %}confidence-low{% endif %}">
-            {{ species.confidence_level }}%
+            {{ species.confidence_level | floatformat:"2" }}%
           </td>
           <td><a href="{{ species.resource_link }}" target="_blank">more here</a></td>
         </tr>
