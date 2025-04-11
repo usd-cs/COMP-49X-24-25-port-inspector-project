@@ -64,10 +64,6 @@ def verify_email_confirm(request, uidb64, token):
     return render(request, "verify-email-confirm.html")
 
 
-def verify_email_complete(request):
-    return render(request, "verify-email-complete.html")
-
-
 def signup_view(request):
     if request.method == "POST":
         print("signup POST request received\n")
