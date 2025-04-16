@@ -9,6 +9,10 @@ services:
   web_migrate:
     build: .
     command: python port_inspector/manage.py migrate
+    volumes:
+      - .:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=port_inspector.settings
 
   web_run:
     extends:
