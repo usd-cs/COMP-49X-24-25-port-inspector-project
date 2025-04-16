@@ -69,6 +69,10 @@
         background-color: #0056b3;
     }
 
+    ul.errorlist {
+      list-style-type: none;
+    }
+
     footer {
         margin-top: 20px;
         font-size: 12px;
@@ -81,6 +85,9 @@
     <h1>Create an Account</h1>
     <form method="POST">
       {% csrf_token %}
+      {% if form.non_field_errors %}
+          {{ form.non_field_errors }}
+      {% endif %}
       <input type="text" name="name" placeholder="Name" required>
       <input type="email" name="email" placeholder="Email" required>
       <input type="password" name="password" placeholder="Password" required>
