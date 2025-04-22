@@ -14,7 +14,7 @@ class CustomUserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.is_usda = email.endswith('@sandiego.edu') #this needs to change to @usda.gov
+        user.is_usda = email.endswith('@sandiego.edu')  # this needs to change to @usda.gov
         user.save(using=self._db)
         return user
 
