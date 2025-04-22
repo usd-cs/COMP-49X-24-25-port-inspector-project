@@ -56,6 +56,30 @@
             flex-direction: column;
             align-items: center;
         }
+        .form-errors {
+            border: 1px solid #f00;
+            padding: 10px;
+            background-color: #ffe6e6;
+            color: #a00;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+        .form-errors ul,
+        .form-errors li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .non-field-error-block {
+            margin-top: 50px;
+            padding-top: 50px;
+        }
+        .field-error:not(:last-of-type) {
+            margin-bottom: 15px;
+        }
+        .error-type-block:not(:last-of-type):has(li) {
+            margin-bottom: 15px
+        }
         .upload-btn {
             background-color: #1a73e8;
             color: white;
@@ -109,7 +133,32 @@
             
             <button type="submit">Upload</button>
         </form>
-        {{ form.non_field_errors }}
+        {% if form.errors %}
+        <div class="form-errors">
+            <ul class="error-type-block">
+            {% for field in form %}
+                {% if field.errors %}
+                <li class="field-error"><strong>{{ field.label }}:</strong>
+                    <ul>
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+            {% if form.non_field_errors %}
+            <ul class="error-type-block">
+                <li class="non-field-error-block"><strong>Error:</strong></li>
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+            </ul>
+            {% endif %}
+            </ul>
+        </div>
+        {% endif %}
     </div>
     <footer>
         &copy; 2024 Port Inspector App

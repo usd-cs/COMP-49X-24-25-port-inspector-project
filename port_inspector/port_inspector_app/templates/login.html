@@ -56,6 +56,20 @@
         outline: none;
     }
 
+    .errorlist {
+      border: 1px solid #f00;
+      padding: 10px;
+      background-color: #ffe6e6;
+      color: #a00;
+      border-radius: 5px;
+    }
+    .errorlist ul,
+    .errorlist li {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
     .button {
         padding: 10px;
         font-size: 16px;
@@ -76,7 +90,7 @@
     <h1>Login</h1>
     <form class="form-with-validation" action="{% url 'login' %}" method="post">
       {% csrf_token %}
-      {{ form.as_table }}
+      {{ form }}
       <button class="button">Login</button>
     </form>
 
