@@ -22,7 +22,7 @@ services:
     # ports:
     #   - "8000:8000"
 
-  # proxy:
+  proxy:
     image: nginx:latest
     ports:
       - "443:8080"    # secure public access port
