@@ -242,21 +242,21 @@ def results_view(request, hashed_ID):
 
 def notify_unknown(request):
     if request.method == "POST":
-        #  user = request.user
-        send_to_email = "akrishnadasan@sandiego.edu"
-        #  this will be dr.Morse's email
-        results_page_url = request.META.get("HTTP_REFERER", "/history/")
-        subject = "Port Inspector App - Unknown Species Uploaded"
-        message = f"""
-        <p>Hello,</p>
-        <p>A user was unable to identify a specimen.</p>
-        <p>Confirm the identification here: <a href="{results_page_url}">{results_page_url}</a></p>
-        <p>Best,</p>
-        <p>Port Inspector App Team</p>
-        """
-        email = EmailMessage(subject, message, to=[send_to_email])
-        email.content_subtype = "html"
-        email.send()
+        user = request.user
+        if user.is_usda:
+            send_to_email = "usdportinspector@gmail.com"
+            results_page_url = request.META.get("HTTP_REFERER", "/history/")
+            subject = "Port Inspector App - Unknown Species Uploaded"
+            message = f"""
+            <p>Hello,</p>
+            <p>A user was unable to identify a specimen.</p>
+            <p>Confirm the identification here: <a href="{results_page_url}">{results_page_url}</a></p>
+            <p>Best,</p>
+            <p>Port Inspector App Team</p>
+            """
+            email = EmailMessage(subject, message, to=[send_to_email])
+            email.content_subtype = "html"
+            email.send()
 
     return redirect("/history/")
 
