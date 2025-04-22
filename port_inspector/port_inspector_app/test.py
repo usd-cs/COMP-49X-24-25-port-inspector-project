@@ -248,10 +248,3 @@ class ResultsViewTests(TestCase):
 
         # Check if species1's confidence level appears first in the HTML
         self.assertIn('95.5', html_content)
-
-
-class NotifyUnknownTest(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-
-
