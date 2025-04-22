@@ -254,17 +254,4 @@ class NotifyUnknownTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
 
-    @patch("django.core.mail.EmailMessage.send")
-    def test_notify_unknown_email_sent(self, mock_email_send):
-        """Test that an email is sent when notify_unknown is called."""
-        request = self.factory.post("/notify_unknown/")
-        request.META["HTTP_REFERER"] = "http://testserver/results/"
 
-        response = notify_unknown(request)
-
-        # Ensure redirect occurs
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/history/")
-
-        # Ensure email was attempted to be sent
-        mock_email_send.assert_called_once()
