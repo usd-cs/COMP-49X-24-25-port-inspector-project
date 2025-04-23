@@ -260,12 +260,13 @@ def notify_unknown(request):
 
     return redirect("/history/")
 
+
 @login_required(login_url='/login/')
 def profile_view(request):
     user = request.user
     context = {
         "email": user.email,
         "name": user.name,
-        "usda_user": user.is_usda  
+        "usda_user": user.is_usda
     }
     return render(request, 'profile.html', context)
