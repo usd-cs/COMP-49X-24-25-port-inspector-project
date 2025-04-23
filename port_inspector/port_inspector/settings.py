@@ -127,6 +127,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Max upload size set to 12MB for now but can be adjusted
+# based on the imaging equipment port inspectors will be using
+MAX_UPLOAD_SIZE = 12582912
 MEDIA_URL = 'uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 

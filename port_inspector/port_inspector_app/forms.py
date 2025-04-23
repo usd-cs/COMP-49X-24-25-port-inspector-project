@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from . import models
 from django.contrib.auth import authenticate, get_user_model
 from django.core.exceptions import ValidationError
@@ -55,6 +56,17 @@ class SpecimenUploadForm(forms.ModelForm):
             cleaned_data.get("lateral_upload")
         ]):
             raise forms.ValidationError("You must upload at least one image.")
+        
+        # Check each of the image forms fit within our filesize limits
+        cleaned_data = super().clean()
+        field_names = ["frontal_upload", "dorsal_upload", "caudal_upload", "lateral_upload"]
+
+        for name in field_names:
+            field = cleaned_data.get(name)
+            if field and hasattr(field, 'size'):
+                if field.size > settings.MAX_UPLOAD_SIZE:
+                    self.add_error(name, f"File size must be less than {settings.MAX_UPLOAD_SIZE // (1024 * 1024)}MB.")
+        
         return cleaned_data
 
     # Override save function so that we save the image data as 'Image' objects in our table
