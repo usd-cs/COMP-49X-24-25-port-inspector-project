@@ -52,7 +52,7 @@
         }
         .usda-flag {
             font-weight: bold;
-            {% if is_usda %}
+            {% if usda_user %}
                 color: green;
             {% else %}
                 color: red;
@@ -79,7 +79,7 @@
         <p><strong>Name:</strong> {{ name }}</p>
         <p><strong>USDA User:</strong>
             <span class="usda-flag">
-                {% if is_usda %}Yes{% else %}No{% endif %}
+                {% if usda_user %}Yes{% else %}No{% endif %}
             </span>
         </p>
     </div>
