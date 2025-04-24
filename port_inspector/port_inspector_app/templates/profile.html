@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9fc;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        header a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+        }
+        header a span {
+            margin-left: 5px;
+        }
+        .container {
+            margin-top: 50px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .usda-flag {
+            font-weight: bold;
+            {% if usda_user %}
+                color: green;
+            {% else %}
+                color: red;
+            {% endif %}
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="icon">🏠<span>Home</span></a>
+        <a href="/history" class="icon">📜<span>History</span></a>
+        <a href="/upload" class="icon">📤<span>Upload Photo</span></a>
+        <a href="/profile" class="icon">👤<span>Profile</span></a>
+        <a href="/logout" class="icon">🔓<span>Logout</span></a>
+    </header>
+    <div class="container">
+        <h1>User Profile</h1>
+        <p><strong>Email:</strong> {{ email }}</p>
+        <p><strong>Name:</strong> {{ name }}</p>
+        <p><strong>USDA User:</strong>
+            <span class="usda-flag">
+                {% if usda_user %}Yes{% else %}No{% endif %}
+            </span>
+        </p>
+    </div>
+    <footer>
+        &copy; 2024 Port Inspector App
+    </footer>
+</body>
+</html>
