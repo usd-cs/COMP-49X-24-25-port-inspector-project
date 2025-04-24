@@ -14,6 +14,7 @@ class CustomUserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
+        user.is_usda = email.endswith('@sandiego.edu')  # this needs to change to @usda.gov
         user.save(using=self._db)
         return user
 
@@ -27,7 +28,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, max_length=255)
     name = models.CharField(max_length=255, null=True, blank=True)
     is_email_verified = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_usda = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
 
     groups = models.ManyToManyField(
