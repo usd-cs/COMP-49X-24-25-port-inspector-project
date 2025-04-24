@@ -146,7 +146,7 @@ def results_view(request, hashed_ID):
     try:
         upload_id = signing.loads(hashed_ID, salt=settings.SALT_KEY)
         upload = SpecimenUpload.objects.get(id=upload_id)
-    except (SpecimenUpload.DoesNotExist):
+    except (SpecimenUpload.DoesNotExist, signing.BadSignature):
         # Invalid id/Upload does not exist
         upload_id, upload = None, None
 
@@ -231,7 +231,7 @@ def results_view(request, hashed_ID):
         "results.html",
         {
             "species_results": formatted_species_results[:6],  # Ensure only 5 species + 1 genus are displayed
-            "upload_id": upload.id if upload else "INVALID ID",
+            "upload_id": upload.id if upload else "DELETED",
             "likely_species": likely_species,
             "confirmed_species": confirmed_species,
             "image_urls": image_urls,

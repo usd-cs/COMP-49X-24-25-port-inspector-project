@@ -65,6 +65,10 @@
       object-fit: cover;
     }
 
+    img.deleted-image {
+      filter: invert(100%) ;
+    }
+
     .results-section {
       width: 60%;
     }
@@ -169,7 +173,7 @@
   <div class="container">
     <div class="image-section">
       {% for image in image_urls %}
-        <img src="/uploads/{{ image }}" alt="Uploaded Image">
+        <img src="/uploads/{{ image }}" onerror="this.src='../uploads/default_image.jpg'; this.classList.add('deleted-image');" alt="Uploaded Image">
       {% endfor %}
     </div>
 

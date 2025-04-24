@@ -77,6 +77,17 @@ class SpecimenUploadForm(forms.ModelForm):
         if user:
             specimen.user = user
 
+            # Enforce max upload limit
+            uploads = models.SpecimenUpload.objects.filter(user=user).order_by("upload_date")
+            # take uploads past our limit, plus one for the upload we are about to make
+            excess = (uploads.count()+1) - settings.USER_MAX_UPLOADS
+
+            # delete excess uploads
+            if excess > 0:
+                uploads_to_delete = uploads[:excess]
+                for upload in uploads_to_delete:
+                    upload.delete()
+
         if commit:
             specimen.save()  # Must save the SpecimenUpload first
 
