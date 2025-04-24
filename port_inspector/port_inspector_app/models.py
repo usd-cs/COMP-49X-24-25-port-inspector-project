@@ -91,6 +91,13 @@ class SpecimenUpload(models.Model):
         if not isinstance(self.species, list) or not (1 <= len(self.species) <= 5):
             raise ValidationError("Species must be a list of 1 to 5 (species_id, confidence_level) tuples.")
 
+    # Delete images on SpecimenUpload delete
+    def delete(self, *args, **kwargs):
+        for image in self.images.all():
+            if image:
+                image.delete()
+        super().delete(*args, **kwargs)
+
     def __str__(self):
         return f"SpecimenUpload #{self.id} by {self.user.email} on {self.upload_date}"
 
@@ -103,11 +110,11 @@ class Image(models.Model):
 
     # TODO: fix, make sure our image files get deleted w/SpecimenUpload
     def delete(self, *args, **kwargs):
-        print("DELETE IMAGE")
         # Delete the associated image file
         if self.image and default_storage.exists(self.image.name):
+            print(f"Deleted Image: {self.image.name}")
             default_storage.delete(self.image.name)
-        super().delete()
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return f"Image #{self.id} for SpecimenUpload #{self.specimen_upload.id} uploaded at {self.uploaded_at}"

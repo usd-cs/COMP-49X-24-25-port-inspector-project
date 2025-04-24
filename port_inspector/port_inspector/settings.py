@@ -100,6 +100,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 9,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -127,6 +130,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Max upload size set to 12MB for now but can be adjusted
+# based on the imaging equipment port inspectors will be using
+MAX_UPLOAD_SIZE = 12582912
 MEDIA_URL = 'uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
@@ -145,3 +151,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "BeetleID usdportinspector@gmail.com"
 SALT_KEY = "callosobruchus!maculatus"
+
+USER_MAX_UPLOADS = 50

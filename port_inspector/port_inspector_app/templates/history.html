@@ -91,6 +91,68 @@
             border-radius: 4px;
         }
 
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            font-family: sans-serif;
+            vertical-align: middle;
+          }
+          
+          .tooltip-icon {
+            width: 12px;
+            height: 12px;
+            border: 1.5px solid rgb(200, 200, 200);
+            color: rgb(200, 200, 200);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            line-height: 1;
+            user-select: none;
+          }
+          
+          .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            width: max-content;
+            max-width: 240px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 6px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: opacity 0.3s ease;
+            font-size: 13px;
+            white-space: normal;
+            word-wrap: break-word;
+            font-weight: normal;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+          }
+          
+          .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+          }
+          
+          .tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+          }
+
         footer {
             margin-top: 20px;
             font-size: 12px;
@@ -112,7 +174,12 @@
         {% endif %}
     </header>
     <div class="container">
-        <h1>History</h1>
+        <h1>History
+        <div class="tooltip-container">
+            <div class="tooltip-icon">i</div>
+            <div class="tooltip-text">Your history will save your last {{max_uploads}} uploads. Old uploads will be deleted.</div>
+        </div>
+        </h1>
         <table>
             <thead>
                 <tr>
