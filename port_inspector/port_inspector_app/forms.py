@@ -56,7 +56,7 @@ class SpecimenUploadForm(forms.ModelForm):
             cleaned_data.get("lateral_upload")
         ]):
             raise forms.ValidationError("You must upload at least one image.")
-        
+
         # Check each of the image forms fit within our filesize limits
         cleaned_data = super().clean()
         field_names = ["frontal_upload", "dorsal_upload", "caudal_upload", "lateral_upload"]
@@ -66,7 +66,7 @@ class SpecimenUploadForm(forms.ModelForm):
             if field and hasattr(field, 'size'):
                 if field.size > settings.MAX_UPLOAD_SIZE:
                     self.add_error(name, f"File size must be less than {settings.MAX_UPLOAD_SIZE // (1024 * 1024)}MB.")
-        
+
         return cleaned_data
 
     # Override save function so that we save the image data as 'Image' objects in our table
@@ -80,7 +80,7 @@ class SpecimenUploadForm(forms.ModelForm):
             # Enforce max upload limit
             uploads = models.SpecimenUpload.objects.filter(user=user).order_by("upload_date")
             # take uploads past our limit, plus one for the upload we are about to make
-            excess = (uploads.count()+1) - settings.USER_MAX_UPLOADS
+            excess = (uploads.count() + 1) - settings.USER_MAX_UPLOADS
 
             # delete excess uploads
             if excess > 0:

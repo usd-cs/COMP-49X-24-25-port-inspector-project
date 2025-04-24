@@ -137,7 +137,7 @@ def view_history(request):
         for upload in specimen:
             hashed_ID = signing.dumps(upload.id, salt=settings.SALT_KEY)
             uploads.append((upload, hashed_ID))
-        return render(request, 'history.html', {'uploads': uploads})
+        return render(request, 'history.html', {'uploads': uploads, 'max_uploads': settings.USER_MAX_UPLOADS})
     else:
         return redirect("/login/")
 
