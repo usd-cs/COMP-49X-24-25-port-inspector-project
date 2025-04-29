@@ -28,6 +28,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, max_length=255)
     name = models.CharField(max_length=255, null=True, blank=True)
     is_email_verified = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
     is_usda = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
 
