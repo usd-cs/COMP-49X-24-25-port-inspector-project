@@ -1,167 +1,268 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload an Image</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9fc;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding: 10px 20px;
-            box-sizing: border-box;
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        header a {
-            text-decoration: none;
-            color: #333;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            margin: 0 10px;
-        }
-        header a span {
-            margin-left: 5px;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 300px;
-            margin-top: 50px;
-        }
-        h1 {
-            font-size: 18px;
-            color: #555;
-            margin-bottom: 20px;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .form-errors {
-            border: 1px solid #f00;
-            padding: 10px;
-            background-color: #ffe6e6;
-            color: #a00;
-            border-radius: 5px;
-            margin-top: 30px;
-        }
-        .form-errors ul,
-        .form-errors li {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
-        .non-field-error-block {
-            margin-top: 50px;
-            padding-top: 50px;
-        }
-        .field-error:not(:last-of-type) {
-            margin-bottom: 15px;
-        }
-        .error-type-block:not(:last-of-type):has(li) {
-            margin-bottom: 15px
-        }
-        .upload-btn {
-            background-color: #1a73e8;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .upload-btn:hover {
-            background-color: #155cb0;
-        }
-        input[type="file"] {
-            margin-bottom: 15px;
-        }
-        footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #aaa;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload an Image</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9fc;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 10px 20px;
+      box-sizing: border-box;
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    header a {
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      margin: 0 10px;
+    }
+    header a span {
+      margin-left: 5px;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 320px;
+      margin-top: 50px;
+    }
+    h1 {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    label {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    input[type="file"] {
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+    .upload-btn {
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+    .upload-btn:hover {
+      background-color: #155cb0;
+    }
+
+    .tooltip-container {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    .tooltip-icon {
+      width: 12px;
+      height: 12px;
+      border: 1.5px solid rgb(200, 200, 200);
+      color: rgb(200, 200, 200);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .tooltip-text {
+      visibility: hidden;
+      opacity: 0;
+      width: 280px;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      border-radius: 6px;
+      padding: 12px;
+      position: absolute;
+      top: 50%;
+      left: 130%;
+      transform: translateY(-50%);
+      transition: opacity 0.3s ease;
+      font-size: 12px;
+      line-height: 1.4;
+      z-index: 1;
+    }
+
+    .tooltip-container:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .tooltip-text::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 100%;
+      transform: translateY(-50%);
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent #333 transparent transparent;
+    }
+
+    .tooltip-image {
+      width: 100%;
+      border-radius: 5px;
+      margin-top: 8px;
+    }
+
+    .form-errors {
+      border: 1px solid #f00;
+      padding: 10px;
+      background-color: #ffe6e6;
+      color: #a00;
+      border-radius: 5px;
+      margin-top: 30px;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #aaa;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <a href="/" class="icon">🏠<span>Home</span></a>
-        <a href="/history" class="icon">📜<span>History</span></a>
-        <a href="/upload" class="icon">📤<span>Upload Photo</span></a>
-        <a href="/profile" class="icon">👤<span>Profile</span></a>
-        {% if not request.user.is_authenticated %}
-        <a href="/login" class="icon">🔒<span>Login</span></a>
-        {% endif %}
-        {% if request.user.is_authenticated %}
-        <a href="/logout" class="icon">🔓<span>Logout</span></a>
-        {% endif %}
-    </header>
-    <div class="container">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-        
-            <label for="id_frontal_image">Frontal Image:</label>
-            {{ form.frontal_upload }}
-            
-            <label for="id_dorsal_image">Dorsal Image:</label>
-            {{ form.dorsal_upload }}
-            
-            <label for="id_caudal_image">Caudal Image:</label>
-            {{ form.caudal_upload }}
-            
-            <label for="id_lateral_image">Lateral Image:</label>
-            {{ form.lateral_upload }}
-            
-            <button type="submit">Upload</button>
-        </form>
-        {% if form.errors %}
-        <div class="form-errors">
-            <ul class="error-type-block">
-            {% for field in form %}
-                {% if field.errors %}
-                <li class="field-error"><strong>{{ field.label }}:</strong>
-                    <ul>
-                    {% for error in field.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                    </ul>
-                </li>
-                {% endif %}
-            {% endfor %}
-            </ul>
-            {% if form.non_field_errors %}
-            <ul class="error-type-block">
-                <li class="non-field-error-block"><strong>Error:</strong></li>
-                    {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-            </ul>
-            {% endif %}
-            </ul>
+  <header>
+    <a href="/">🏠<span>Home</span></a>
+    <a href="/history">📜<span>History</span></a>
+    <a href="/upload">📤<span>Upload Photo</span></a>
+    <a href="/profile">👤<span>Profile</span></a>
+    {% if not request.user.is_authenticated %}
+    <a href="/login">🔒<span>Login</span></a>
+    {% endif %}
+    {% if request.user.is_authenticated %}
+    <a href="/logout">🔓<span>Logout</span></a>
+    {% endif %}
+  </header>
+
+  <div class="container">
+    <h1>Upload Beetle Images</h1>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <label for="id_frontal_image">
+        Frontal Image:
+        <div class="tooltip-container">
+          <div class="tooltip-icon">i</div>
+          <div class="tooltip-text">
+            The frontal aspect can be informative, although variable positioning of the antennae and mouthparts means that this aspect will improve as more data are added to train the AI model.<br><br>
+            Currently the model performs best if the image is captured with the frons (the area between the eyes) in alignment with the clypeus.
+            <img src="{% static 'frontal.png' %}" class="tooltip-image" />
+          </div>
         </div>
+      </label>
+      {{ form.frontal_upload }}
+
+      <label for="id_dorsal_image">
+        Dorsal Image:
+        <div class="tooltip-container">
+          <div class="tooltip-icon">i</div>
+          <div class="tooltip-text">
+            The dorsal habitus has been shown to have significant information in both geometric morphometrics (through the shape of both the pronotum and the elytra) and in informing the training of the AI model for identification.<br><br>
+            We are training the model with variation in the level of the head with the pygidium, however the images should be uploaded <strong>with the head at the left</strong>.
+            <img src="{% static 'dorsal.png' %}" class="tooltip-image" />
+          </div>
+        </div>
+      </label>
+      {{ form.dorsal_upload }}
+
+      <label for="id_caudal_image">
+        Caudal Image:
+        <div class="tooltip-container">
+          <div class="tooltip-icon">i</div>
+          <div class="tooltip-text">
+            The caudal habitus has provided significant information for accurate identification in testing and training the model.<br><br>
+            While we have attempted to train the model with some variation of positioning the specimen, it will work best if the image is captured with the pygidium (the last dorsal plate of the abdomen) viewed in a single plane.
+            <img src="{% static 'caudal.png' %}" class="tooltip-image" />
+          </div>
+        </div>
+      </label>
+      {{ form.caudal_upload }}
+
+      <label for="id_lateral_image">
+        Lateral Image:
+        <div class="tooltip-container">
+          <div class="tooltip-icon">i</div>
+          <div class="tooltip-text">
+            The lateral aspect can be informative, although variable positioning of appendages means that this aspect will improve as more data are added to train the AI model.<br><br>
+            We are training the model with variation in the level of the head with the pygidium, however the images should be uploaded <strong>with the head at the left</strong>.
+            <img src="{% static 'lateral.png' %}" class="tooltip-image" />
+          </div>
+        </div>
+      </label>
+      {{ form.lateral_upload }}
+
+      <button type="submit" class="upload-btn">Upload</button>
+    </form>
+
+    {% if form.errors %}
+    <div class="form-errors">
+      <ul>
+        {% for field in form %}
+        {% if field.errors %}
+        <li><strong>{{ field.label }}:</strong>
+          <ul>
+            {% for error in field.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </li>
         {% endif %}
+        {% endfor %}
+        {% if form.non_field_errors %}
+        <li><strong>Error:</strong>
+          <ul>
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </li>
+        {% endif %}
+      </ul>
     </div>
-    <footer>
-        &copy; 2024 Port Inspector App
-    </footer>
+    {% endif %}
+  </div>
+
+  <footer>
+    &copy; 2024 Port Inspector App
+  </footer>
 </body>
 </html>
