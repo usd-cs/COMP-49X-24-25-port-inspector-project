@@ -142,14 +142,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'port_inspector_app.User'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = 'usdportinspector@test-68zxl2773n94j905.mlsender.net'
 
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = "usdportinspector@gmail.com"
-EMAIL_HOST_PASSWORD = "ogxo gxzh acjz hrwu"
-EMAIL_PORT = 587
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mailersend.net'
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = 'MS_QdPaSd@test-68zxl2773n94j905.mlsender.net'
+EMAIL_HOST_PASSWORD = 'mssp.Sg9272B.pxkjn41pv5p4z781.vtj1F7n'
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = "BeetleID usdportinspector@gmail.com"
+
 SALT_KEY = "callosobruchus!maculatus"
 
 USER_MAX_UPLOADS = 50
