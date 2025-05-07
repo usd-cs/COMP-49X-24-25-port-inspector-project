@@ -37,6 +37,7 @@ class SignupTestCase(TestCase):
     @patch("port_inspector_app.forms.UserRegisterForm.save")
     def test_user_signup(self, mock_save):
         mock_user = MagicMock()
+        mock_user.user_id = 1
         mock_save.return_value = mock_user
 
         response = self.client.post(reverse("signup"), {
