@@ -134,9 +134,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "uploads",
 ]
 
-# Max upload size set to 12MB for now but can be adjusted
+# Max upload size set to 8MB for now but can be adjusted
 # based on the imaging equipment port inspectors will be using
-MAX_UPLOAD_SIZE = 12582912
+MAX_UPLOAD_SIZE = 8388608
 MEDIA_URL = 'uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
