@@ -2,7 +2,7 @@
 
 # Photo Upload and History Application
 
-This project is a web application built with Django that allows users to upload photos and view their upload history. It provides a simple interface for photo management, enabling users to track their uploads conveniently.
+This project is a web application built with Django that allows users to upload photos of seed beetles, receive results as to their likely species and genus, and view their upload history. It provides a simple interface for photo management, enabling users to track their uploads conveniently.
 
 ## Features
 The application satisfies the following user stories:
@@ -13,6 +13,17 @@ The application satisfies the following user stories:
 ## Technologies Used
 - **Backend & Frontend Framework:** Django
 - **Database:** Django’s default SQLite 
+- **Email API:** MailerSend
+
+## API setup
+If planning to host the application on a server, using an email API for account management (email verification, etc.) is required. Our application uses MailerSend but similar API's can be used.  
+
+### 1. Open account with MailerSend
+Make an account with [MailerSend](https://www.mailersend.com/), verify the domain you   
+would like to host the server on, and generate credentials for SMTP sending.
+
+### 2. Put Credentials in Config File
+With the MailerSend credentials, fill out the `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` variables
 
 ## Setup and Installation
 
@@ -27,33 +38,24 @@ cd port_inspector
 ```
 
 ### 3. Install Dependencies
-Ensure you have Django installed or install it via pip:
+Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)  
+With Docker Desktop open, run the following command in the project directory.
 ```bash
-pip install django
-```
-
-### 4. Run Migrations
-Set up the database tables by running:
-```bash
-python3 manage.py migrate
+docker compose build
 ```
 
 ## Running the Server
 
 ### 1. Start the Server
-Run the following command to start the development server:
+Use docker to run migrations and start up the server by running the following:
 ```bash
-python3 manage.py runserver
+docker compose up
 ```
 
-### 2. Access the Application
-Open a web browser and go to the following link to upload a photo:
+### 2. Access the Application Locally
+Open a web browser and go to the following link:
 ```
-http://127.0.0.1:8000/upload
-```
-To view history, go to the following link:
-```
-http://127.0.0.1:8000/history
+http://localhost:8000/
 ```
 
 

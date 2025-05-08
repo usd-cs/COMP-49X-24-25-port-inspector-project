@@ -146,7 +146,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'port_inspector_app.User'
 
-DEFAULT_FROM_EMAIL = 'usdportinspector@test-68zxl2773n94j905.mlsender.net'
+DEFAULT_FROM_EMAIL = 'usdportinspector@port-inspector-app.dedyn.io'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mailersend.net'
