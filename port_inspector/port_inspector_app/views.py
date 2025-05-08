@@ -16,29 +16,26 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from .tokens import account_activation_token
 
 
-def verify_email(request):
+def verify_email(request, user_id):
     if request.method == "POST":
-        if not request.user.is_email_verified:
-            current_site = get_current_site(request)
-            user = request.user
-            email = request.user.email
-            subject = "Verify Email"
-            message = render_to_string(
-                "verify-email-message.html",
-                {
-                    "request": request,
-                    "user": user,
-                    "domain": current_site.domain,
-                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                    "token": account_activation_token.make_token(user),
-                },
-            )
-            email = EmailMessage(subject, message, to=[email])
-            email.content_subtype = "html"
-            email.send()
-            return redirect("verify-email-done")
-        else:
-            return redirect("signup")
+        current_site = get_current_site(request)
+        user = User.objects.get(pk=user_id)
+        email = user.email
+        subject = "Verify Email"
+        message = render_to_string(
+            "verify-email-message.html",
+            {
+                "request": request,
+                "user": user,
+                "domain": current_site.domain,
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                "token": account_activation_token.make_token(user),
+            },
+        )
+        email = EmailMessage(subject, message, to=[email])
+        email.content_subtype = "html"
+        email.send()
+        return redirect("verify-email-done")
     return render(request, "verify-email.html")
 
 
@@ -55,6 +52,7 @@ def verify_email_confirm(request, uidb64, token):
 
     if user is not None and account_activation_token.check_token(user, token):
         user.is_email_verified = True
+        user.is_active = True
         user.save()
         messages.success(request, "Your email has been verified.")
         return redirect("/login/")
@@ -75,14 +73,13 @@ def signup_view(request):
             user.save()
             new_user = authenticate(email=user.email, password=password)
             if new_user:
-                login(request, new_user)
-                return redirect("verify-email")
+                return redirect("verify-email", user_id=user.user_id)
             else:
                 print("Authentication failed")
             if next_page:
                 return redirect(next_page)
             else:
-                return redirect("verify-email")
+                return redirect("verify-email", user_id=user.user_id)
         else:
             print("ERROR: Email already in use or passwords do not match\n")
     else:
@@ -95,8 +92,12 @@ def login_view(request):
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            login(request, form.get_user())
-            return redirect("/upload/")  # after the user logs in, send them to the homepage
+            user = form.get_user()
+            if not user.is_email_verified:
+                messages.error(request, "Please verify your email before logging in.")
+                return redirect("/login/")  # or re-render with error
+            login(request, user)
+            return redirect("/upload/")
     # if user is already logged in, redirect
     elif request.user.is_authenticated:
         return redirect("/upload/")
