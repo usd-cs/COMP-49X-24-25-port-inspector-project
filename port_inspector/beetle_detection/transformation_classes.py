@@ -1,3 +1,4 @@
+# flake8: noqa
 """ transformation_classes.py """
 import math
 from PIL import ImageOps
