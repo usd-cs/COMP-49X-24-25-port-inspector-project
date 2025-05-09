@@ -236,7 +236,8 @@ def results_view(request, hashed_ID):
             "likely_species": likely_species,
             "confirmed_species": confirmed_species,
             "image_urls": image_urls,
-            "confirm_form": confirm_form
+            "confirm_form": confirm_form,
+            "is_usda": request.user.is_usda
         },
     )
 

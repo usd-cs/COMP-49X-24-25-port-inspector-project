@@ -217,11 +217,15 @@
             <button type="submit" class="confirm-btn">Confirm</button>
           </form>
 
-
+        {% if species_results.1.confidence_level < 20.0 %}
+        <p>WARNING: Species confidences are low. Please retake photos and try again, or consult further resources{% if is_usda %}, before notifying Admin User below{% endif %}</p>
+        {% endif %}
+        {% if is_usda %}
         <form class="unknown-form" action="/notify_unknown/" method="POST">
           {% csrf_token %}
           <button type="submit" class="unknown-btn">Unknown Species</button>
         </form>
+        {% endif %}
       </div>
     </div>
   </div>
