@@ -4,8 +4,8 @@ psycopg2-binary==2.9.5
 sqlparse==0.4.3
 tzdata==2022.7
 whitenoise==6.2.0
-Pillow
-six
-torchvision
-torch
-dill
+Pillow==11.2.1
+six==1.17.0
+torchvision==0.21.0
+torch==2.6.0
+dill==0.4.0
