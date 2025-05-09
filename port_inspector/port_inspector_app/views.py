@@ -226,10 +226,10 @@ def results_view(request, hashed_ID):
         confirm_form = ConfirmIdForm(choices=confirm_choices)
 
     confirmed_species = upload.final_identification if upload else None
-    
+
     try:
         is_usda = request.user.is_usda
-    except:
+    except AttributeError:
         is_usda = False
 
     return render(
