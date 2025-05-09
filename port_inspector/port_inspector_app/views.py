@@ -226,6 +226,11 @@ def results_view(request, hashed_ID):
         confirm_form = ConfirmIdForm(choices=confirm_choices)
 
     confirmed_species = upload.final_identification if upload else None
+    
+    try:
+        is_usda = request.user.is_usda
+    except:
+        is_usda = False
 
     return render(
         request,
@@ -237,7 +242,7 @@ def results_view(request, hashed_ID):
             "confirmed_species": confirmed_species,
             "image_urls": image_urls,
             "confirm_form": confirm_form,
-            "is_usda": request.user.is_usda
+            "is_usda": is_usda
         },
     )
 

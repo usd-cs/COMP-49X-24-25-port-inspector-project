@@ -234,10 +234,6 @@ class ResultsViewTests(TestCase):
         # Create a mock request object
         request = HttpRequest()
         request.method = 'GET'
-        # Mock user usda status for HTML template
-        mock_user = MagicMock()
-        mock_user.is_usda = False
-        request.user = mock_user
 
         # Call the view function
         hashed_ID = signing.dumps("1", salt=settings.SALT_KEY)  # Fake hash
